@@ -1,10 +1,13 @@
 .normal_text{
-    font-size: 12pt;
-    width: 250pt;
+    font-size: 11pt;
+    width: 300pt;
+    font-family: "Roboto" sans-serif;
+    font-weight: 400;
 }
 
 .title{
-    font-family: monospace;
+    font-family: "Roboto" sans-serif;
+    font-weight: 700;
     font-size: 20pt;
 }
 
@@ -18,5 +21,5 @@
 }
 
 .padded{
-    padding:8pt;
+    padding:6pt;
 }
