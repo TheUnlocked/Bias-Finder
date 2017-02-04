@@ -35,8 +35,7 @@ $.getJSON('http://www.allsides.com/download/allsides_data.json', function(data) 
 			});
 		}
 		else{
-			chrome.browserAction.setTitle({title: "Not Rated", tabId: tabId})
-			chrome.browserAction.setIcon({path: {"24": images[2690]["img"]}, tabId: tabId});
+			chrome.browserAction.disable(tabId);
 		}
 	}
 	chrome.tabs.onActivated.addListener(function(info){

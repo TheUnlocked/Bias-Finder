@@ -25,7 +25,7 @@ $(document).ready(function(){
             "2707": {"img": "Icons/bias-mixed.png", "alt": "Mixed bias",
                 "desc": "This site has a very mixed alignment, or simply doesn't fall on the left/right partisanship scale."},
             "2690": {"img": "Icons/bias-not-yet-rated.png", "alt": "Site not rated",
-                "desc": "This site has either not been databased by <a href=\"#\" id=\"link\">allsides.com</a>, or not enough data about this site's bias has been collected to make an accurate claim."},
+                "desc": "This site has not yet been rated."},
         };
         function generate(data, rating){
             var img = document.createElement("img");
@@ -44,12 +44,6 @@ $(document).ready(function(){
                         document.getElementById("link").addEventListener("click", function(){
                             chrome.tabs.create({url:target});
                         });
-                    });
-                }
-                else{
-                    target = "http://www.allsides.com/bias/bias-ratings";
-                    document.getElementById("link").addEventListener("click", function(){
-                        chrome.tabs.create({url:target});
                     });
                 }
                 document.getElementById("title").innerHTML = data.news_source;
