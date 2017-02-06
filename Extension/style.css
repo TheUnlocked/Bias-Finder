@@ -1,14 +1,14 @@
 .normal_text{
-    font-size: 11pt;
     width: 300pt;
-    font-family: "Roboto" sans-serif;
+    font-family: "Open Sans", sans-serif;
     font-weight: 400;
+    font-size: 11pt;
 }
 
 .title{
-    font-family: "Roboto" sans-serif;
-    font-weight: 700;
-    font-size: 20pt;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 800;
+    font-size: 24pt;
 }
 
 .hidden{
@@ -22,4 +22,12 @@
 
 .padded{
     padding:6pt;
+}
+
+.inline{
+    display: inline;
+}
+
+.hr{
+    border-color: rgba(0, 0, 0, 0.2);
 }

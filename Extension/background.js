@@ -1,5 +1,6 @@
 var currentData = {};
 var firstParagraph = "";
+var confidence = "";
 
 $.getJSON('http://www.allsides.com/download/allsides_data.json', function(data) {
 	var images = {
@@ -24,6 +25,9 @@ $.getJSON('http://www.allsides.com/download/allsides_data.json', function(data) 
 			if (obj.news_source == "Associated Press"){
 				return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes("apnews.com");
 			}
+			if (obj.news_source == "Newsweek"){
+				return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes("newsweek.com");
+			}
 			return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes(obj.url.replace("www.", "").replace("https", "http").replace("\\", "").toLowerCase());
 		});
 		currentData = biasList[0];
@@ -32,6 +36,7 @@ $.getJSON('http://www.allsides.com/download/allsides_data.json', function(data) 
 			chrome.browserAction.setTitle({title: images[biasList[0].bias_rating]["name"] + " - " + biasList[0].news_source, tabId: tabId});
 			$.get(currentData.allsides_url.replace("\\", ""), function(data){
 				firstParagraph = String(data).split('<div id="content"')[1].split('<p>')[1].split('</p>')[0];
+				confidence = String(data).split('<h4>Confidence Level:</h4>')[1].split('<strong class="margin-left-25">')[1].split('</')[0];
 			});
 		}
 		else{
@@ -53,9 +58,10 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse){
 		sendResponse(currentData);
 	}
 	else if (message.message == "getFirstParagraph"){
-		$.get(currentData.allsides_url.replace("\\", ""), function(data){
-			sendResponse(firstParagraph);
-		});
+		sendResponse(firstParagraph);
+	}
+	else if (message.message == "getConfidence"){
+		sendResponse(confidence);
 	}
 	return true;
 });

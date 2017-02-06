@@ -35,15 +35,21 @@ $(document).ready(function(){
             document.getElementById("desc").innerHTML = ratingObjs[rating].desc;
             if (!jQuery.isEmptyObject(data)){
                 if (rating != 2690){
-                    chrome.runtime.sendMessage({"message": "getFirstParagraph"}, function(response){
-                        var separated = response.split(" ");
-                        var shortened = separated.splice(0,maxWords).join(" ") + ((separated.length < maxWords) ? "..." : "");
+                    chrome.runtime.sendMessage({"message": "getFirstParagraph"}, function(firstParagraph){
+                    chrome.runtime.sendMessage({"message": "getConfidence"}, function(confidence){
+                        document.getElementById("confidence").innerHTML = confidence;
+                        var shortened = "";
+                        if (!firstParagraph.startsWith("The AllSides Bias RatingTM reflects the average judgment of the American people.")){
+                            var separated = firstParagraph.split(" ");
+                            shortened = separated.splice(0,maxWords).join(" ") + ((separated.length < maxWords) ? "..." : "") + "<br />";
+                        }
                         document.getElementById("site_desc").classList.remove("hidden");
-                        document.getElementById("site_desc").innerHTML = shortened + '<br /> <a href=\"#\" id=\"link\">Click here for more information</a>';
+                        document.getElementById("site_desc").innerHTML = shortened + '<a href=\"#\" id=\"link\">Click here for more information</a>';
                         target = data.allsides_url;
                         document.getElementById("link").addEventListener("click", function(){
                             chrome.tabs.create({url:target});
                         });
+                    });
                     });
                 }
                 document.getElementById("title").innerHTML = data.news_source;
