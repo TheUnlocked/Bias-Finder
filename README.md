@@ -1,6 +1,6 @@
 # Bias-Finder
 
-### This Chrome extension is in no way affiliated or endorsed by AllSides
+### This Chrome extension is in no way affiliated with or endorsed by AllSides
 
 ## Installation:
 ### Packaged (easy):  
