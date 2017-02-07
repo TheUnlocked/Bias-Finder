@@ -10,23 +10,24 @@ $(document).ready(function(){
         chrome.tabs.create({url:"http://twitter.com/The_Unlocked/"});
     });
 
+    var ratingObjs = {
+        "71": {"img": "Icons/bias-left.png", "alt": "Left bias",
+            "desc": "This site tends to be biased to the left. This trend reflects the site as a whole and not any specific article."},
+        "72": {"img": "Icons/bias-leaning-left.png", "alt": "Leaning left bias",
+            "desc": "This site tends to be slightly biased to the left. This trend reflects the site as a whole and not any specific article."},
+        "73": {"img": "Icons/bias-center.png", "alt": "Center bias",
+            "desc": "This site tends to be centrally aligned. This trend reflects the site as a whole and not any specific article."},
+        "74": {"img": "Icons/bias-leaning-right.png", "alt": "Leaning right bias",
+            "desc": "This site tends to be slightly biased to the right. This trend reflects the site as a whole and not any specific article."},
+        "75": {"img": "Icons/bias-right.png", "alt": "Right bias",
+            "desc": "This site tends to be biased to the right. This trend reflects the site as a whole and not any specific article."},
+        "2707": {"img": "Icons/bias-mixed.png", "alt": "Mixed bias",
+            "desc": "This site has a very mixed alignment, or simply doesn't fall on the left/right partisanship scale."},
+        "2690": {"img": "Icons/bias-not-yet-rated.png", "alt": "Site not rated",
+            "desc": "This site has not yet been rated."},
+    };
+
     chrome.runtime.sendMessage({"message": "getinfo"}, function(data){
-        var ratingObjs = {
-            "71": {"img": "Icons/bias-left.png", "alt": "Left bias",
-                "desc": "This site tends to be biased to the left. This trend reflects the site as a whole and not any specific article."},
-            "72": {"img": "Icons/bias-leaning-left.png", "alt": "Leaning left bias",
-                "desc": "This site tends to be slightly biased to the left. This trend reflects the site as a whole and not any specific article."},
-            "73": {"img": "Icons/bias-center.png", "alt": "Center bias",
-                "desc": "This site tends to be centrally aligned. This trend reflects the site as a whole and not any specific article."},
-            "74": {"img": "Icons/bias-leaning-right.png", "alt": "Leaning right bias",
-                "desc": "This site tends to be slightly biased to the right. This trend reflects the site as a whole and not any specific article."},
-            "75": {"img": "Icons/bias-right.png", "alt": "Right bias",
-                "desc": "This site tends to be biased to the right. This trend reflects the site as a whole and not any specific article."},
-            "2707": {"img": "Icons/bias-mixed.png", "alt": "Mixed bias",
-                "desc": "This site has a very mixed alignment, or simply doesn't fall on the left/right partisanship scale."},
-            "2690": {"img": "Icons/bias-not-yet-rated.png", "alt": "Site not rated",
-                "desc": "This site has not yet been rated."},
-        };
         function generate(data, rating){
             if (document.getElementById("icon").innerHTML == ""){
                 var img = document.createElement("img");
@@ -61,9 +62,11 @@ $(document).ready(function(){
                         document.getElementById("link").addEventListener("click", function(){
                             chrome.tabs.create({url:target});
                         });
-                        if (firstParagraph == "" || confidence == "" || firstParagraph.includes('<strong>')){
+                        if (firstParagraph == "" || confidence == "" || (firstParagraph.includes('<strong>') && !data.news_source.includes("AllSides"))){
                             console.log("Failed to get all data on first attempt. Retrying...");
-                            setTimeout(generate, 100);
+                            setTimeout(function (){
+                                generate(data, rating);
+                            }, 100);
                         }
                     });
                     });

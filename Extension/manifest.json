@@ -3,7 +3,7 @@
 
   "name": "Bias Finder",
   "description": "Find the bias of any news site you go to with this simple extension!",
-  "version": "0.2.5",
+  "version": "0.2.6",
 
   "options_ui": {
     "page": "options.html",
