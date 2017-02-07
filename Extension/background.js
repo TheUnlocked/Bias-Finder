@@ -28,6 +28,15 @@ $.getJSON('http://www.allsides.com/download/allsides_data.json', function(data) 
 			if (obj.news_source == "Newsweek"){
 				return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes("newsweek.com");
 			}
+			if (obj.news_source == "The Korea Herald"){
+				return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes("koreaherald.com");
+			}
+			if (obj.news_source == "The Advocate-Messenger"){
+				return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes("amnews.com");
+			}
+			if (obj.news_source == "CBN"){
+				return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes("www1.cbn.com");
+			}
 			return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes(obj.url.replace("www.", "").replace("https", "http").replace("\\", "").toLowerCase());
 		});
 		currentData = biasList[0];
