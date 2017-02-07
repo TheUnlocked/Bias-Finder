@@ -21,4 +21,4 @@
 
 ## Uninstallation:
 1. Go to chrome://extensions/
-2. Click the trash can icon next to the extension ![](http://i.imgur.com/11tUqtg.png)
+2. Click the trash can icon next to the extension ![](http://i.imgur.com/JuaKrMz.png)
