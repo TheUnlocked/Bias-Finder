@@ -1,5 +1,7 @@
 # Bias-Finder
 
+### This repository will be updated as development continues, however most versions will not have releases associated with them anymore. All updates will go to https://chrome.google.com/webstore/detail/bias-finder/jojjlkfeofgcjeanbpghcapjcccbakop. If you want the latest version, go there or follow the source installation instructions for a non-DRM version.
+
 ### This Chrome extension is in no way affiliated with AllSides
 
 ## Installation:
