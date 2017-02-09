@@ -1,4 +1,4 @@
-# Bias-Finder
+# Bias Finder
 
 ### This repository will be updated as development continues, however most versions will not have releases associated with them anymore. All updates will go to [the Chrome Webstore](https://chrome.google.com/webstore/detail/bias-finder/jojjlkfeofgcjeanbpghcapjcccbakop). If you want the latest version, go there or follow the source installation instructions for a non-DRM version.
 
