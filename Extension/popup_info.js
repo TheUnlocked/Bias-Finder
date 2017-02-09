@@ -44,7 +44,7 @@ $(document).ready(function(){
                         var shortened = "";
                         if (!firstParagraph.startsWith("The AllSides Bias RatingTM reflects the average judgment of the American people.")){
                             var separated = firstParagraph.split(" ");
-                            shortened = separated.splice(0,maxWords).join(" ") + ((separated.length < maxWords) ? "..." : "") + "<br />";
+                            shortened = separated.splice(0,maxWords).join(" ") + ((separated.length > maxWords) ? "..." : "") + "<br />";
                             separated = shortened.split('<a');
                             for (i = 0; i < separated.length; i++){
                                 if (i % 2 == 1){
@@ -52,7 +52,6 @@ $(document).ready(function(){
                                 }
                             }
                         }
-                        document.getElementById("site_desc").classList.remove("hidden");
                         document.getElementById("site_desc").innerHTML = shortened + '<a href=\"#\" id=\"link\">Click here for more information</a>';
                         $("#site_desc a").replaceWith(function() {
                             return $(this).attr('id') == "link" ? $(this) : $(this).contents();
@@ -69,6 +68,13 @@ $(document).ready(function(){
                             }, 100);
                         }
                     });
+                    });
+                }
+                else{
+                    document.getElementById("site_desc").innerHTML =  '<a href=\"#\" id=\"link\">Click here for more information</a>';
+                    target = data.allsides_url;
+                    document.getElementById("link").addEventListener("click", function(){
+                        chrome.tabs.create({url:target});
                     });
                 }
                 document.getElementById("title").innerHTML = data.news_source;
