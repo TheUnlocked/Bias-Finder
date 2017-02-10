@@ -9,6 +9,12 @@ $(document).ready(function(){
     document.getElementById("unlocked_link").addEventListener("click",function(){
         chrome.tabs.create({url:"http://twitter.com/The_Unlocked/"});
     });
+    document.getElementById("review_link").addEventListener("click",function(){
+        chrome.tabs.create({url:"https://chrome.google.com/webstore/detail/bias-finder/jojjlkfeofgcjeanbpghcapjcccbakop/reviews"});
+    });
+    document.getElementById("source_link").addEventListener("click",function(){
+        chrome.tabs.create({url:"https://github.com/TheUnlocked/Bias-Finder"});
+    });
 
     var ratingObjs = {
         "71": {"img": "Icons/bias-left.png", "alt": "Left bias",

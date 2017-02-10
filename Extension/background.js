@@ -74,3 +74,23 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse){
 	}
 	return true;
 });
+
+chrome.runtime.onUpdateAvailable.addListener(function(details){
+	chrome.runtime.reload();
+	console.log("Updated!");
+});
+
+var numMinutes = 10;
+setInterval(function (){
+	chrome.runtime.requestUpdateCheck(function(status, details){
+		if (status == "throttled"){
+			// Too many requests!
+		}
+		else if (status == "no_update"){
+			// No update avaliable
+		}
+		else if (status == "update_available"){
+			// An update is avaliable!
+		}
+	});
+}, numMinutes * 60000);
