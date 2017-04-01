@@ -1,0 +1,20 @@
+1.0.5
+* Added CBS News Exception
+* Changed UX
+
+1.0.6
+* More exceptions
+* Updated exception security
+
+1.0.7
+* HOTFIX Updated exception security
+
+1.0.8
+* HOTFIX CNN wasn't working
+
+1.1.0
+* New icon
+
+1.1.1
+* Tweaked Not Rated icon for better clarity
+* Fixed default display text for the review footer image

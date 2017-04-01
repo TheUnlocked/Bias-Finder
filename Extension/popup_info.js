@@ -12,8 +12,8 @@ $(document).ready(function(){
     document.getElementById("review_link").addEventListener("click",function(){
         chrome.tabs.create({url:"https://chrome.google.com/webstore/detail/bias-finder/jojjlkfeofgcjeanbpghcapjcccbakop/reviews"});
     });
-    document.getElementById("source_link").addEventListener("click",function(){
-        chrome.tabs.create({url:"https://github.com/TheUnlocked/Bias-Finder"});
+    document.getElementById("settings_link").addEventListener("click",function(){
+        chrome.tabs.create({url:"chrome://extensions/?options=" + chrome.runtime.id});
     });
 
     var ratingObjs = {
@@ -50,7 +50,7 @@ $(document).ready(function(){
                         var shortened = "";
                         if (!firstParagraph.startsWith("The AllSides Bias RatingTM reflects the average judgment of the American people.")){
                             var separated = firstParagraph.split(" ");
-                            shortened = separated.splice(0,maxWords).join(" ") + ((separated.length > maxWords) ? "..." : "") + "<br />";
+                            shortened = separated.splice(0,maxWords).join(" ") + "..." + "<br />";
                             separated = shortened.split('<a');
                             for (i = 0; i < separated.length; i++){
                                 if (i % 2 == 1){
