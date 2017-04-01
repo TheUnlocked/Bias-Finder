@@ -57,13 +57,11 @@ $.getJSON('http://www.allsides.com/download/allsides_data.json', function(data) 
 		if (biasList.length > 0){
 			chrome.browserAction.setIcon({path: {"24": images[biasList[0].bias_rating]["img"]}, tabId: tabId});
 			chrome.browserAction.setTitle({title: images[biasList[0].bias_rating]["name"] + " - " + biasList[0].news_source, tabId: tabId});
+			chrome.browserAction.setPopup({popup: "Popup/info_popup.html",tabId: tabId});
 			$.get(currentData.allsides_url.replace("\\", ""), function(data){
 				firstParagraph = String(data).split('<div id="content"')[1].split('<p>')[1].split('</p>')[0];
 				confidence = String(data).split('<h4>Confidence Level:</h4>')[1].split('<strong class="margin-left-25">')[1].split('</')[0];
 			});
-		}
-		else{
-			chrome.browserAction.disable(tabId);
 		}
 	}
 	chrome.tabs.onActivated.addListener(function(info){

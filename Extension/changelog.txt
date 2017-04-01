@@ -15,6 +15,11 @@
 1.1.0
 * New icon
 
-1.1.1
+1.1.1 (Listed as 1.1.0 due to forgetting to iterate the version number)
 * Tweaked Not Rated icon for better clarity
 * Fixed default display text for the review footer image
+
+1.1.2
+* Decreased maximum description length from 80 words to 60 words.
+* Replaced disabled icon with a default landing page
+* Rearranged folders
