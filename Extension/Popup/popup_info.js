@@ -15,8 +15,8 @@ $(document).ready(function(){
         browser.tabs.create({url:"https://chrome.google.com/webstore/detail/bias-finder/jojjlkfeofgcjeanbpghcapjcccbakop/reviews"});
         window.close();
     });
-    document.getElementById("settings_link").addEventListener("click",function(){
-        browser.tabs.create({url:"browser://extensions/?options=" + browser.runtime.id});
+    document.getElementById("source_link").addEventListener("click",function(){
+        browser.tabs.create({url:"https://github.com/TheUnlocked/Bias-Finder/tree/firefox"});
         window.close();
     });
 
