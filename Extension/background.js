@@ -55,26 +55,26 @@ $.getJSON('http://www.allsides.com/download/allsides_data.json', function(data) 
 		});
 		currentData = biasList[0];
 		if (biasList.length > 0){
-			chrome.browserAction.setIcon({path: {"24": images[biasList[0].bias_rating]["img"]}, tabId: tabId});
-			chrome.browserAction.setTitle({title: images[biasList[0].bias_rating]["name"] + " - " + biasList[0].news_source, tabId: tabId});
-			chrome.browserAction.setPopup({popup: "Popup/info_popup.html",tabId: tabId});
+			browser.browserAction.setIcon({path: {"24": images[biasList[0].bias_rating]["img"]}, tabId: tabId});
+			browser.browserAction.setTitle({title: images[biasList[0].bias_rating]["name"] + " - " + biasList[0].news_source, tabId: tabId});
+			browser.browserAction.setPopup({popup: "Popup/info_popup.html",tabId: tabId});
 			$.get(currentData.allsides_url.replace("\\", ""), function(data){
 				firstParagraph = String(data).split('<div id="content"')[1].split('<p>')[1].split('</p>')[0];
 				confidence = String(data).split('<h4>Confidence Level:</h4>')[1].split('<strong class="margin-left-25">')[1].split('</')[0];
 			});
 		}
 	}
-	chrome.tabs.onActivated.addListener(function(info){
-		chrome.tabs.get(info.tabId, function(tab){
+	browser.tabs.onActivated.addListener(function(info){
+		browser.tabs.get(info.tabId, function(tab){
 			switchIcon(tab, info.tabId);
 		});
 	});
-	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
+	browser.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
 		switchIcon(tab, tabId);
 	});
 });
 
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse){
+browser.runtime.onMessage.addListener(function (message, sender, sendResponse){
 	if (message.message == "getinfo"){
 		sendResponse(currentData);
 	}

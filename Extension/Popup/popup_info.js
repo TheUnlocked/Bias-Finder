@@ -4,16 +4,20 @@ $(document).ready(function(){
     var target;
 
     document.getElementById("allsides_link").addEventListener("click",function(){
-        chrome.tabs.create({url:"http://allsides.com/"});
+        browser.tabs.create({url:"http://allsides.com/"});
+        window.close();
     });
     document.getElementById("unlocked_link").addEventListener("click",function(){
-        chrome.tabs.create({url:"http://twitter.com/The_Unlocked/"});
+        browser.tabs.create({url:"http://twitter.com/The_Unlocked/"});
+        window.close();
     });
     document.getElementById("review_link").addEventListener("click",function(){
-        chrome.tabs.create({url:"https://chrome.google.com/webstore/detail/bias-finder/jojjlkfeofgcjeanbpghcapjcccbakop/reviews"});
+        browser.tabs.create({url:"https://chrome.google.com/webstore/detail/bias-finder/jojjlkfeofgcjeanbpghcapjcccbakop/reviews"});
+        window.close();
     });
     document.getElementById("settings_link").addEventListener("click",function(){
-        chrome.tabs.create({url:"chrome://extensions/?options=" + chrome.runtime.id});
+        browser.tabs.create({url:"browser://extensions/?options=" + browser.runtime.id});
+        window.close();
     });
 
     var ratingObjs = {
@@ -33,7 +37,7 @@ $(document).ready(function(){
             "desc": "This site has not yet been rated."},
     };
 
-    chrome.runtime.sendMessage({"message": "getinfo"}, function(data){
+    browser.runtime.sendMessage({"message": "getinfo"}, function(data){
         function generate(data, rating){
             if (document.getElementById("icon").innerHTML == ""){
                 var img = document.createElement("img");
@@ -44,8 +48,8 @@ $(document).ready(function(){
             document.getElementById("desc").innerHTML = ratingObjs[rating].desc;
             if (!jQuery.isEmptyObject(data)){
                 if (rating != 2690){
-                    chrome.runtime.sendMessage({"message": "getFirstParagraph"}, function(firstParagraph){
-                    chrome.runtime.sendMessage({"message": "getConfidence"}, function(confidence){
+                    browser.runtime.sendMessage({"message": "getFirstParagraph"}, function(firstParagraph){
+                    browser.runtime.sendMessage({"message": "getConfidence"}, function(confidence){
                         document.getElementById("confidence").innerHTML = confidence;
                         var shortened = "";
                         if (!firstParagraph.startsWith("The AllSides Bias RatingTM reflects the average judgment of the American people.")){
@@ -65,7 +69,7 @@ $(document).ready(function(){
 
                         target = data.allsides_url;
                         document.getElementById("link").addEventListener("click", function(){
-                            chrome.tabs.create({url:target});
+                            browser.tabs.create({url:target});
                         });
                         if (firstParagraph == "" || confidence == "" || (firstParagraph.includes('<strong>') && !data.news_source.includes("AllSides"))){
                             console.log("Failed to get all data on first attempt. Retrying...");
@@ -80,7 +84,7 @@ $(document).ready(function(){
                     document.getElementById("site_desc").innerHTML =  '<a href=\"#\" id=\"link\">Click here for more information</a>';
                     target = data.allsides_url;
                     document.getElementById("link").addEventListener("click", function(){
-                        chrome.tabs.create({url:target});
+                        browser.tabs.create({url:target});
                     });
                 }
                 document.getElementById("title").innerHTML = data.news_source;
@@ -88,7 +92,7 @@ $(document).ready(function(){
             else{
                 target = "http://www.allsides.com/bias/bias-ratings";
                 document.getElementById("link").addEventListener("click", function(){
-                    chrome.tabs.create({url:target});
+                    browser.tabs.create({url:target});
                 });
             }
         }
