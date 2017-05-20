@@ -12,7 +12,7 @@ $(document).ready(function(){
         window.close();
     });
     document.getElementById("review_link").addEventListener("click",function(){
-        browser.tabs.create({url:"https://chrome.google.com/webstore/detail/bias-finder/jojjlkfeofgcjeanbpghcapjcccbakop/reviews"});
+        browser.tabs.create({url:"https://addons.mozilla.org/en-US/firefox/addon/bias-finder/#reviews"});
         window.close();
     });
     document.getElementById("source_link").addEventListener("click",function(){
