@@ -1,5 +1,7 @@
 # Bias Finder
 
+#### Bias Finder is currently avaliable on Firefox and Chome, due both to their large userbase and ease of extension development. Safari and Edge are not supported because Microsoft and Apple act like they want to make it hard for third-party developers.
+
 ### This repository will be updated as development continues, however most versions will not have releases associated with them anymore. All updates will go to [the Chrome Webstore](https://chrome.google.com/webstore/detail/bias-finder/jojjlkfeofgcjeanbpghcapjcccbakop). If you want the latest version, go there or follow the source installation instructions for a non-DRM version.
 
 ## Installation:
