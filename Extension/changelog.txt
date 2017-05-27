@@ -23,3 +23,6 @@
 * Decreased maximum description length from 80 words to 60 words.
 * Replaced disabled icon with a default landing page
 * Rearranged folders
+
+1.1.2.1
+* Minor backend adjustments

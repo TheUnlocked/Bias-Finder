@@ -17,41 +17,28 @@ $.getJSON('http://www.allsides.com/download/allsides_data.json', function(data) 
 
 	function switchIcon(tab, tabId){
 		currentTab = tab;
+
+		simplifiedURL = tab.url.toLowerCase().replace("http://", "https://", 1).replace("www.", "", 1);
+		var hardcodeList = {
+			"Washington Post": "https://washingtonpost.com/",
+			"Yahoo News": "https://yahoo.com/",
+			"Associated Press": "https://apnews.com/",
+			"Newsweek": "https://newsweek.com/",
+			"The Korea Herald": "https://koreaherald.com/",
+			"The Advocate-Messenger": "https://amnews.com/",
+			"CBN": "https://www1.cbn.com/",
+			"CBS ": "https://cbsnews.com/",
+			"Wall Street Journal- News": "https://wsj.com/",
+			"Newsweek": "https://newsweek.com/",
+			"CNN": "cnn.com/" //No http:// in order to add support for CNN's numerous subdomains.
+		};
+
 		var biasList = data.filter(function(obj){
-			if (obj.news_source == "Washington Post"){
-				return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes("http://washingtonpost.com/");
+			if (obj.news_source in hardcodeList){
+				console.log(obj.news_source in hardcodeList);
+				return simplifiedURL.includes(hardcodeList[obj.news_source]);
 			}
-			if (obj.news_source == "Yahoo News"){
-				return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes("http://yahoo.com/");
-			}
-			if (obj.news_source == "Associated Press"){
-				return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes("http://apnews.com/");
-			}
-			if (obj.news_source == "Newsweek"){
-				return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes("http://newsweek.com/");
-			}
-			if (obj.news_source == "The Korea Herald"){
-				return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes("http://koreaherald.com/");
-			}
-			if (obj.news_source == "The Advocate-Messenger"){
-				return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes("http://amnews.com/");
-			}
-			if (obj.news_source == "CBN"){
-				return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes("http://www1.cbn.com/");
-			}
-			if (obj.news_source == "CBS "){
-				return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes("http://cbsnews.com/");
-			}
-			if (obj.news_source == "Wall Street Journal- News"){
-				return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes("http://wsj.com/");
-			}
-			if (obj.news_source == "Newsweek"){
-				return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes("http://newsweek.com/");
-			}
-			if (obj.news_source == "CNN"){
-				return (tab.url.replace("www", "").replace("https", "http").toLowerCase() + "/").includes(".cnn.com/");
-			}
-			return (tab.url.replace("www.", "").replace("https", "http").toLowerCase() + "/").includes(obj.url.replace("www.", "").replace("https", "http").replace("\\", "").toLowerCase());
+			return simplifiedURL.includes(obj.url.toLowerCase().replace("\\", "").replace("http://", "https://", 1).replace("www.", "", 1));
 		});
 		currentData = biasList[0];
 		if (biasList.length > 0){
