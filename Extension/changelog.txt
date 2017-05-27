@@ -3,3 +3,6 @@
 
 1.0.2
 * Changed some footers
+
+1.0.2.1
+* Minor backend adjustments
