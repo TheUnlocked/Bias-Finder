@@ -8,4 +8,4 @@
   * An exception is if the data is given to a third party in preparation for public release.
     * All data given this way will be under embargo until public release.
     
-**tl;dr** Sending usage data to Google Analytics will not affect you, but you may opt out anyways if you wish.
+**tl;dr** Sending usage data to Google Analytics will not affect you, but you may opt out anyways if you wish. Your data won't be sold if you stay opted in.
