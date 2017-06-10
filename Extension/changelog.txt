@@ -26,3 +26,7 @@
 
 1.1.2.1
 * Minor backend adjustments
+
+1.2.0
+* Fixed some hyperlink stuff
+* Implemented Google Analytics telemetry

@@ -4,6 +4,8 @@ var confidence = "";
 
 var currentTab;
 
+postVersionInfo();
+
 $.getJSON('http://www.allsides.com/download/allsides_data.json', function(data) {
 	var images = {
 		"71": {"img": "Icons/icon-left.png", "name":"Left"},
@@ -30,18 +32,18 @@ $.getJSON('http://www.allsides.com/download/allsides_data.json', function(data) 
 			"CBS ": "https://cbsnews.com/",
 			"Wall Street Journal- News": "https://wsj.com/",
 			"Newsweek": "https://newsweek.com/",
-			"CNN": "cnn.com/" //No http:// in order to add support for CNN's numerous subdomains.
+			"CNN": "cnn.com/" //No https:// in order to add support for CNN's numerous subdomains.
 		};
 
 		var biasList = data.filter(function(obj){
 			if (obj.news_source in hardcodeList){
-				console.log(obj.news_source in hardcodeList);
 				return simplifiedURL.includes(hardcodeList[obj.news_source]);
 			}
 			return simplifiedURL.includes(obj.url.toLowerCase().replace("\\", "").replace("http://", "https://", 1).replace("www.", "", 1));
 		});
 		currentData = biasList[0];
 		if (biasList.length > 0){
+			gotoSite(biasList[0].news_source, images[biasList[0].bias_rating]["name"]);
 			chrome.browserAction.setIcon({path: {"24": images[biasList[0].bias_rating]["img"]}, tabId: tabId});
 			chrome.browserAction.setTitle({title: images[biasList[0].bias_rating]["name"] + " - " + biasList[0].news_source, tabId: tabId});
 			chrome.browserAction.setPopup({popup: "Popup/info_popup.html",tabId: tabId});

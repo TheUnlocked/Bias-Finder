@@ -3,19 +3,6 @@ var maxWords = 60;
 $(document).ready(function(){
     var target;
 
-    document.getElementById("allsides_link").addEventListener("click",function(){
-        chrome.tabs.create({url:"http://allsides.com/"});
-    });
-    document.getElementById("unlocked_link").addEventListener("click",function(){
-        chrome.tabs.create({url:"http://twitter.com/The_Unlocked/"});
-    });
-    document.getElementById("review_link").addEventListener("click",function(){
-        chrome.tabs.create({url:"https://chrome.google.com/webstore/detail/bias-finder/jojjlkfeofgcjeanbpghcapjcccbakop/reviews"});
-    });
-    document.getElementById("settings_link").addEventListener("click",function(){
-        chrome.tabs.create({url:"chrome://extensions/?options=" + chrome.runtime.id});
-    });
-
     var ratingObjs = {
         "71": {"img": "Icons/bias-left.png", "alt": "Left bias",
             "desc": "This site tends to be biased to the left. This trend reflects the site as a whole and not any specific article."},
@@ -81,9 +68,11 @@ $(document).ready(function(){
                     target = data.allsides_url;
                     document.getElementById("link").addEventListener("click", function(){
                         chrome.tabs.create({url:target});
+                        clickLink("moreInfo");
                     });
                 }
                 document.getElementById("title").innerHTML = data.news_source;
+                openPopup(data.news_source);
             }
             else{
                 target = "http://www.allsides.com/bias/bias-ratings";
