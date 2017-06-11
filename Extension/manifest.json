@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "Bias Finder",
-  "version": "1.2.0",
+  "version": "1.2.0.1",
 
   "icons": {"128": "Icons/icon_about.png"},
 
