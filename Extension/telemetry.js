@@ -62,7 +62,7 @@ function postVersionInfo(){
             buffer.push({
                 hitType: 'event',
                 eventCategory: category,
-                eventAction: 'versonInfo',
+                eventAction: 'versionInfo',
                 eventLabel: chrome.app.getDetails().version
             });
 

@@ -30,3 +30,6 @@
 1.2.0
 * Fixed some hyperlink stuff
 * Implemented Google Analytics telemetry
+
+1.2.0.1
+* Fixed typo
