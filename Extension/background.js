@@ -7,6 +7,9 @@ var currentTab;
 postVersionInfo();
 
 $.getJSON('http://www.allsides.com/download/allsides_data.json', function(data) {
+$.getJSON('https://gist.githubusercontent.com/TheUnlocked/42be5e01eaad902415bf4c23224a8679/raw/biasfinder_data.json', function(d){
+	data = data.concat(d);
+}).always(function(){
 	var images = {
 		"71": {"img": "Icons/icon-left.png", "name":"Left"},
 		"72": {"img": "Icons/icon-leaning-left.png", "name":"Lean Left"},
@@ -61,6 +64,7 @@ $.getJSON('http://www.allsides.com/download/allsides_data.json', function(data) 
 	chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
 		switchIcon(tab, tabId);
 	});
+});
 });
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse){

@@ -22,6 +22,9 @@ $(document).ready(function(){
 
     chrome.runtime.sendMessage({"message": "getinfo"}, function(data){
         function generate(data, rating){
+            if ("forced" in data && data["forced"]){
+                document.getElementById("disclaimer").classList.remove("hidden");
+            }
             if (document.getElementById("icon").innerHTML == ""){
                 var img = document.createElement("img");
                 img.src = ratingObjs[rating].img;
