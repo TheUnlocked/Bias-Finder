@@ -2,28 +2,29 @@
 <html>
     <head>
         <base href="../">
+        <script src="telemetry.js"></script>
         <script src="jquery-3.1.1.min.js"></script>
-        <script src="Popup/popup_info.js"></script>
+        <script src="Popup/links.js"></script>
         <script src="Popup/allsides_search.js"></script>
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,800" rel="stylesheet">
-        <link rel="stylesheet" href="style.css"></link>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,800" rel="stylesheet" />
+        <link rel="stylesheet" href="style.css" />
     </head>
 
     <body>
-        <div class="title normal_text no_padding">Bias Finder</div>
-        It looks like this site doesn't have a bias listing, or its listing is inaccessible by Bias Finder. You can search for this site on AllSides with this handy search box:
-        <input id="allsides_search" type="text" placeholder="Washington Post, New York Times, CNN, Fox, etc." style="width:80%">
-        <input id="confirm_search" type="button" value="Go">
-        <br /><br />
-        If you find this site on AllSides, feel free to shoot me a tweet or DM at <a id="unlocked_link" href="">@The_Unlocked</a> and I'll figure it out.
-        <hr />
+    <div class="title normal_text no_padding">Bias Finder</div>
+    It looks like this site doesn't have a bias listing, or its listing is inaccessible by Bias Finder. You can search for this site on AllSides with this handy search box:
+    <input id="allsides_search" type="text" placeholder="Washington Post, New York Times, CNN, Fox, etc." style="width:80%">
+    <input id="confirm_search" type="button" value="Go">
+    <br /><br />
+    If you find this site on AllSides, feel free to shoot me a tweet or DM at <a id="unlocked_link_hyper" href="">@The_Unlocked</a> and I'll figure it out.
+    <hr />
     </body>
     <footer>
         <div id="footer_container">
-            <a class="img_button" id="unlocked_link" href=""><img src="Decoration/footer_unlocked.png" alt="Written by Unlocked"></img></a>
-            <a class="img_button" id="allsides_link" href=""><img src="Decoration/footer_allsides.png" alt="Powered by Allsides"></img></a>
-            <a class="img_button" id="source_link" href=""><img src="Decoration/footer_source.png" alt="Source Code on GitHub"></img></a>
-            <a class="img_button" id="review_link" href=""><img src="Decoration/footer_review.png" alt="Write a Review"></img></a>
+            <a class="img_button unlocked_link" href=""><img src="Decoration/footer_unlocked.png" alt="Written by Unlocked" /></a>
+            <a class="img_button allsides_link" href=""><img src="Decoration/footer_allsides.png" alt="Powered by Allsides" /></a>
+            <a class="img_button settings_link" href=""><img src="Decoration/footer_settings.png" alt="Bias Finder Settings" /></a>
+            <a class="img_button review_link" href=""><img src="Decoration/footer_review.png" alt="Write a Review" /></a>
         </div>
     </footer>
 </html>

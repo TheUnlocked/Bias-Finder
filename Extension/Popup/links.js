@@ -1,0 +1,27 @@
+$(function(){
+    $(".allsides_link").click(function(){
+        browser.tabs.create({url:"http://allsides.com/"});
+        clickLink("allsides");
+        window.close();
+    });
+    $(".unlocked_link").click(function(){
+        browser.tabs.create({url:"http://twitter.com/The_Unlocked/"});
+        clickLink("twitter");
+        window.close();
+    });
+    $(".unlocked_link_hyper").click(function(){
+        browser.tabs.create({url:"http://twitter.com/The_Unlocked/"});
+        clickLink("twitter");
+        window.close();
+    });
+    $(".review_link").click(function(){
+        browser.tabs.create({url:"https://addons.mozilla.org/en-US/firefox/addon/bias-finder/reviews/add"});
+        clickLink("writeReview");
+        window.close();
+    });
+    $(".settings_link").click(function(){
+        browser.runtime.openOptionsPage();
+        clickLink("settings");
+        window.close();
+    });
+});

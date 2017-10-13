@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "Bias Finder",
-  "version": "1.0.2.1",
+  "version": "1.1.0",
 
   "icons": {"128": "Icons/icon_about.png"},
 
@@ -12,15 +12,20 @@
   "author": "Unlocked",
   "homepage_url": "https://github.com/TheUnlocked/Bias-Finder/tree/firefox",
 
+  "options_ui": {
+    "page": "Options/options.html"
+  },
+
   "browser_action": {
     "default_icon": "Icons/icon.png",
     "default_popup": "Popup/unfound_popup.html"
   },
   "permissions": [
     "tabs",
+    "storage",
     "<all_urls>"
   ],
   "background": {
-      "scripts": ["jquery-3.1.1.min.js", "background.js"]
+      "scripts": ["jquery-3.1.1.min.js", "telemetry.js", "background.js"]
   }
 }

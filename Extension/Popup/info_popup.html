@@ -1,27 +1,37 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <base href="../">
-        <script src="jquery-3.1.1.min.js"></script>
-        <script src="Popup/popup_info.js"></script>
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,800" rel="stylesheet">
-        <link rel="stylesheet" href="style.css"></link>
-    </head>
+<head>
+    <base href="../">
+    <script src="telemetry.js"></script>
+    <script src="jquery-3.1.1.min.js"></script>
+    <script src="Popup/links.js"></script>
+    <script src="Popup/popup_info.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,800" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
 
-    <body>
-        <div id="title" class="title normal_text no_padding">Bias Finder</div>
-        <div id="icon" class="no_padding"></div>
-        <div class="no_padding normal_text"><strong>Confidence Level: </strong><div id="confidence" class="inline">Not Avaliable</div></div>
-        <div id="desc" class="normal_text padded"></div>
-        <hr class="hr" />
-        <div id="site_desc" class="normal_text padded"></div>
-    </body>
-    <footer>
-        <div id="footer_container">
-            <a class="img_button" id="unlocked_link" href=""><img src="Decoration/footer_unlocked.png" alt="Written by Unlocked"></img></a>
-            <a class="img_button" id="allsides_link" href=""><img src="Decoration/footer_allsides.png" alt="Powered by Allsides"></img></a>
-            <a class="img_button" id="source_link" href=""><img src="Decoration/footer_source.png" alt="Source Code on GitHub"></img></a>
-            <a class="img_button" id="review_link" href=""><img src="Decoration/footer_review.png" alt="Write a Review"></img></a>
-        </div>
-    </footer>
+<body>
+<div id="title" class="title normal_text no_padding">Bias Finder</div>
+<div id="icon" class="no_padding"></div>
+<div class="no_padding normal_text"><strong>Confidence Level: </strong><div id="confidence" class="inline">Not Avaliable</div></div>
+<div id="desc" class="normal_text padded"></div>
+<span id="disclaimer" class="hidden">
+            <hr class="hr">
+            <div class="normal_text padded">
+                <b>Disclaimer:</b> This site's bias information is not directly collected from <a class="allsides_link" href="">AllSides.com</a>.
+            This shouldn't be an issue, but if Bias Finder shows a different rating for this site than AllSides.com does, please contact me immediately.
+            </div>
+        </span>
+<hr class="hr" />
+<div id="site_desc" class="normal_text padded"></div>
+<hr class="hr" />
+</body>
+<footer>
+    <div id="footer_container">
+        <a class="img_button unlocked_link" href=""><img src="Decoration/footer_unlocked.png" alt="Written by Unlocked" /></a>
+        <a class="img_button allsides_link" href=""><img src="Decoration/footer_allsides.png" alt="Powered by Allsides" /></a>
+        <a class="img_button settings_link" href=""><img src="Decoration/footer_settings.png" alt="Bias Finder Settings" /></a>
+        <a class="img_button review_link" href=""><img src="Decoration/footer_review.png" alt="Write a Review" /></a>
+    </div>
+</footer>
 </html>
