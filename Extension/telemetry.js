@@ -55,7 +55,7 @@ function searchSite(term){
 
 function postVersionInfo(){
     chrome.storage.sync.get("postedVersion", function(items){
-        if (!("postedVersion" in items) || items["postedVersion"] != chrome.app.getDetails().version){
+        if (!("postedVersion" in items) || items["postedVersion"] != chrome.runtime.getManifest().version){
 
             chrome.storage.sync.set({"postedVersion": chrome.app.getDetails().version});
 
