@@ -6,3 +6,9 @@
 
 1.0.2.1
 * Minor backend adjustments
+
+1.1.0 - Pull from Chrome (master) branch
+* Implemented Google Analytics telemetry
+* Code improvements
+* Added support for problematic sites
+* Rephrasing

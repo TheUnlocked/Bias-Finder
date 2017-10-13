@@ -1,24 +1,7 @@
 var maxWords = 60;
 
-$(document).ready(function(){
+$(function(){
     var target;
-
-    document.getElementById("allsides_link").addEventListener("click",function(){
-        browser.tabs.create({url:"http://allsides.com/"});
-        window.close();
-    });
-    document.getElementById("unlocked_link").addEventListener("click",function(){
-        browser.tabs.create({url:"http://twitter.com/The_Unlocked/"});
-        window.close();
-    });
-    document.getElementById("review_link").addEventListener("click",function(){
-        browser.tabs.create({url:"https://addons.mozilla.org/en-US/firefox/addon/bias-finder/#reviews"});
-        window.close();
-    });
-    document.getElementById("source_link").addEventListener("click",function(){
-        browser.tabs.create({url:"https://github.com/TheUnlocked/Bias-Finder/tree/firefox"});
-        window.close();
-    });
 
     var ratingObjs = {
         "71": {"img": "Icons/bias-left.png", "alt": "Left bias",
@@ -34,11 +17,14 @@ $(document).ready(function(){
         "2707": {"img": "Icons/bias-mixed.png", "alt": "Mixed bias",
             "desc": "This site has a very mixed alignment, or simply doesn't fall on the left/right partisanship scale."},
         "2690": {"img": "Icons/bias-not-yet-rated.png", "alt": "Site not rated",
-            "desc": "This site has not yet been rated."},
+            "desc": "This site has not yet been rated."}
     };
 
     browser.runtime.sendMessage({"message": "getinfo"}, function(data){
         function generate(data, rating){
+            if ("forced" in data && data["forced"]){
+                document.getElementById("disclaimer").classList.remove("hidden");
+            }
             if (document.getElementById("icon").innerHTML == ""){
                 var img = document.createElement("img");
                 img.src = ratingObjs[rating].img;
@@ -49,35 +35,35 @@ $(document).ready(function(){
             if (!jQuery.isEmptyObject(data)){
                 if (rating != 2690){
                     browser.runtime.sendMessage({"message": "getFirstParagraph"}, function(firstParagraph){
-                    browser.runtime.sendMessage({"message": "getConfidence"}, function(confidence){
-                        document.getElementById("confidence").innerHTML = confidence;
-                        var shortened = "";
-                        if (!firstParagraph.startsWith("The AllSides Bias RatingTM reflects the average judgment of the American people.")){
-                            var separated = firstParagraph.split(" ");
-                            shortened = separated.splice(0,maxWords).join(" ") + "..." + "<br />";
-                            separated = shortened.split('<a');
-                            for (i = 0; i < separated.length; i++){
-                                if (i % 2 == 1){
-                                    separated[i] = separated[i].split('>', 1)
+                        browser.runtime.sendMessage({"message": "getConfidence"}, function(confidence){
+                            document.getElementById("confidence").innerHTML = confidence;
+                            var shortened = "";
+                            if (!firstParagraph.startsWith("The AllSides Bias RatingTM reflects the average judgment of the American people.")){
+                                var separated = firstParagraph.split(" ");
+                                shortened = separated.splice(0,maxWords).join(" ") + "..." + "<br />";
+                                separated = shortened.split('<a');
+                                for (var i = 0; i < separated.length; i++){
+                                    if (i % 2 == 1){
+                                        separated[i] = separated[i].split('>', 1)
+                                    }
                                 }
                             }
-                        }
-                        document.getElementById("site_desc").innerHTML = shortened + '<a href=\"#\" id=\"link\">Click here for more information</a>';
-                        $("#site_desc a").replaceWith(function() {
-                            return $(this).attr('id') == "link" ? $(this) : $(this).contents();
-                        });
+                            document.getElementById("site_desc").innerHTML = shortened + '<a href=\"#\" id=\"link\">Click here for more information</a>';
+                            $("#site_desc").find("a").replaceWith(function() {
+                                return $(this).attr('id') == "link" ? $(this) : $(this).contents();
+                            });
 
-                        target = data.allsides_url;
-                        document.getElementById("link").addEventListener("click", function(){
-                            browser.tabs.create({url:target});
+                            target = data.allsides_url;
+                            document.getElementById("link").addEventListener("click", function(){
+                                browser.tabs.create({url:target});
+                            });
+                            if (firstParagraph == "" || confidence == "" || (firstParagraph.includes('<strong>') && !data.news_source.includes("AllSides"))){
+                                console.log("Failed to get all data on first attempt. Retrying...");
+                                setTimeout(function (){
+                                    generate(data, rating);
+                                }, 100);
+                            }
                         });
-                        if (firstParagraph == "" || confidence == "" || (firstParagraph.includes('<strong>') && !data.news_source.includes("AllSides"))){
-                            console.log("Failed to get all data on first attempt. Retrying...");
-                            setTimeout(function (){
-                                generate(data, rating);
-                            }, 100);
-                        }
-                    });
                     });
                 }
                 else{
@@ -85,9 +71,11 @@ $(document).ready(function(){
                     target = data.allsides_url;
                     document.getElementById("link").addEventListener("click", function(){
                         browser.tabs.create({url:target});
+                        clickLink("moreInfo");
                     });
                 }
                 document.getElementById("title").innerHTML = data.news_source;
+                openPopup(data.news_source);
             }
             else{
                 target = "http://www.allsides.com/bias/bias-ratings";
