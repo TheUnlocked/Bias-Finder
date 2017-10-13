@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(function(){
     chrome.storage.sync.get("enableTelemetry", function(items){
         if ("enableTelemetry" in items){
             document.getElementById("enableTelemetry").checked = items["enableTelemetry"];

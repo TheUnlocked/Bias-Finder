@@ -1,6 +1,6 @@
 var buffer = [];
 
-var category = "Release"
+var category = "Release";
 
 function openPopup(site){
     buffer.push({
@@ -93,7 +93,7 @@ chrome.storage.sync.get("enableTelemetry", function(items){
         ga('create', 'UA-100491583-1', 'auto');
         ga('set', 'checkProtocolTask', null);
 
-        pushBuffer = function(){ ga('send', buffer.pop()); }
+        pushBuffer = function(){ ga('send', buffer.pop()); };
         while (buffer.length > 0){
             pushBuffer();
         }

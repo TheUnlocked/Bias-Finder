@@ -1,6 +1,6 @@
 var maxWords = 60;
 
-$(document).ready(function(){
+$(function(){
     var target;
 
     var ratingObjs = {
@@ -17,7 +17,7 @@ $(document).ready(function(){
         "2707": {"img": "Icons/bias-mixed.png", "alt": "Mixed bias",
             "desc": "This site has a very mixed alignment, or simply doesn't fall on the left/right partisanship scale."},
         "2690": {"img": "Icons/bias-not-yet-rated.png", "alt": "Site not rated",
-            "desc": "This site has not yet been rated."},
+            "desc": "This site has not yet been rated."}
     };
 
     chrome.runtime.sendMessage({"message": "getinfo"}, function(data){
@@ -42,14 +42,14 @@ $(document).ready(function(){
                             var separated = firstParagraph.split(" ");
                             shortened = separated.splice(0,maxWords).join(" ") + "..." + "<br />";
                             separated = shortened.split('<a');
-                            for (i = 0; i < separated.length; i++){
+                            for (var i = 0; i < separated.length; i++){
                                 if (i % 2 == 1){
                                     separated[i] = separated[i].split('>', 1)
                                 }
                             }
                         }
                         document.getElementById("site_desc").innerHTML = shortened + '<a href=\"#\" id=\"link\">Click here for more information</a>';
-                        $("#site_desc a").replaceWith(function() {
+                        $("#site_desc").find("a").replaceWith(function() {
                             return $(this).attr('id') == "link" ? $(this) : $(this).contents();
                         });
 
