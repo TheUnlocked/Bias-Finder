@@ -39,7 +39,7 @@ $(() => {
 	postVersionInfo();
 	let data = [];
 	$.getJSON('http://www.allsides.com/download/allsides_data.json', d => data = data.concat(d))
-	//.always(() => $.getJSON('http://www.allsides.com/download/allsides_data.json', d => data = data.concat(d)))
+	.always(() => $.getJSON('http://www.allsides.com/download/allsides_data.json', d => data = data.concat(d)))
 	.always(() => {
 		function switchIcon(tab, tabId){
 			currentTab = tab;
