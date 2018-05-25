@@ -53,12 +53,12 @@ $(() => {
 				return simplifiedURL.includes(obj.url.toLowerCase().replace("\\", "").replace("http://", "https://").replace("www.", ""));
 			});
 			if (biasList.length > 0){
-				// if (biasList.length > 1){
-				// 	currentData = biasList.filter((obj) => obj.forced)[0];
-				// }
-				// else{
+				if (biasList.length > 1){
+					currentData = biasList.filter((obj) => obj.forced)[0];
+				}
+				else{
 					currentData = biasList[0];
-				// }
+				}
 				chrome.browserAction.setIcon({"path": {"24": images[currentData.bias_rating].img}, "tabId": tabId});
 				chrome.browserAction.setTitle({"title": images[currentData.bias_rating].name + " - " + currentData.news_source, "tabId": tabId});
 				chrome.browserAction.setPopup({"popup": "Popup/info_popup.html", "tabId": tabId});
