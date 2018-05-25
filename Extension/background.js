@@ -38,7 +38,7 @@ const hardcodeList = {
 $(() => {
 	postVersionInfo();
 	let data = [];
-	$.getJSON('http://www.allsides.com/download/allsides_data.json', d => data = data.concat(d))
+	$.getJSON('https://gist.github.com/TheUnlocked/42be5e01eaad902415bf4c23224a8679', d => data = data.concat(d))
 	.always(() => $.getJSON('http://www.allsides.com/download/allsides_data.json', d => data = data.concat(d)))
 	.always(() => {
 		function switchIcon(tab, tabId){
