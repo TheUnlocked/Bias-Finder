@@ -1,9 +1,9 @@
-var maxWords = 60;
+let maxWords = 60;
 
 $(function(){
-    var target;
+    let target;
 
-    var ratingObjs = {
+    let ratingObjs = {
         "71": {"img": "Icons/bias-left.png", "alt": "Left bias",
             "desc": "This site tends to be biased to the left. This trend reflects the site as a whole and not any specific article."},
         "72": {"img": "Icons/bias-leaning-left.png", "alt": "Leaning left bias",
@@ -22,11 +22,11 @@ $(function(){
 
     chrome.runtime.sendMessage({"message": "getinfo"}, function(data){
         function generate(data, rating){
-            if ("forced" in data && data["forced"]){
+            if (data && data.forced){
                 document.getElementById("disclaimer").classList.remove("hidden");
             }
             if (document.getElementById("icon").innerHTML == ""){
-                var img = document.createElement("img");
+                let img = document.createElement("img");
                 img.src = ratingObjs[rating].img;
                 img.alt = ratingObjs[rating].alt;
                 document.getElementById("icon").appendChild(img);
@@ -37,12 +37,12 @@ $(function(){
                     chrome.runtime.sendMessage({"message": "getFirstParagraph"}, function(firstParagraph){
                     chrome.runtime.sendMessage({"message": "getConfidence"}, function(confidence){
                         document.getElementById("confidence").innerHTML = confidence;
-                        var shortened = "";
+                        let shortened = "";
                         if (!firstParagraph.startsWith("The AllSides Bias RatingTM reflects the average judgment of the American people.")){
-                            var separated = firstParagraph.split(" ");
+                            let separated = firstParagraph.split(" ");
                             shortened = separated.splice(0,maxWords).join(" ") + "..." + "<br />";
                             separated = shortened.split('<a');
-                            for (var i = 0; i < separated.length; i++){
+                            for (let i = 0; i < separated.length; i++){
                                 if (i % 2 == 1){
                                     separated[i] = separated[i].split('>', 1)
                                 }
