@@ -32,7 +32,7 @@ const hardcodeList = {
 	"CBN": "https://www1.cbn.com/",
 	"CBS ": "https://cbsnews.com/",
 	"Wall Street Journal- News": "https://wsj.com/",
-	"CNN": "cnn.com/" //No https:// in order to add support for CNN's numerous subdomains.
+	"CNN": "cnn.com/", //No https:// in order to add support for CNN's numerous subdomains.
 };
 
 $(() => {
@@ -42,6 +42,8 @@ $(() => {
 	.always(() => $.getJSON('http://www.allsides.com/download/allsides_data.json', d => data = data.concat(d)))
 	.always(() => {
 		function switchIcon(tab, tabId){
+			data = data.filter(obj => obj.news_source != "Test Source");
+
 			currentTab = tab;
 
 			let simplifiedURL = tab.url.toLowerCase().replace("http://", "https://").replace("www.", "");
