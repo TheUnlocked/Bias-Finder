@@ -61,14 +61,17 @@ $(() => {
 				chrome.browserAction.setTitle({"title": images[currentData.bias_rating].name + " - " + currentData.news_source, "tabId": tabId});
 				chrome.browserAction.setPopup({"popup": "Popup/info_popup.html", "tabId": tabId});
 				$.get(currentData.allsides_url.replace("\\", ""), function(data){
-					firstParagraph = String(data).split('<div id="content"')[1].split('<p>')[1].split('</p>')[0];
-					confidence = String(data).split('<h4>Confidence Level:</h4>')[1].split('<strong class="margin-left-25">')[1].split('</')[0];
-					let biasString = String(data).split('<span class="bias-value">')[1].split('</')[0];
+					dataText = String(data);
+					firstParagraph = dataText.split('<div id="content"', 2)[1].split('<p>', 2)[1].split('</p>', 1)[0];
+					confidence = dataText.split('<h4>Confidence Level:</h4>', 2)[1].split('<strong class="margin-left-25">')[1].split('</', 1)[0];
+					let biasString = dataText.split('<span class="bias-value">', 2)[1].split('</', 1)[0];
 					if (biasString && biasString != images[currentData.bias_rating].name){
 						currentData.bias_rating = nameDict[biasString];
 						chrome.browserAction.setIcon({"path": {"24": images[currentData.bias_rating].img}, "tabId": tabId});
 						chrome.browserAction.setTitle({"title": images[currentData.bias_rating].name + " - " + currentData.news_source, "tabId": tabId});
 					}
+					currentData.news_source = dataText.split('<div class="span4 source-image-wrapper News Media">', 2)[1].split('<h2>', 2)[1].split('</', 1)[0];
+
 					gotoSite(currentData.news_source, images[currentData.bias_rating].name);
 				});
 			}
