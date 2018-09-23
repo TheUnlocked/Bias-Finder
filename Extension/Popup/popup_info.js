@@ -57,7 +57,7 @@ $(function(){
                         document.getElementById("link").addEventListener("click", function(){
                             chrome.tabs.create({url:target});
                         });
-                        if (firstParagraph == "" || confidence == "" || (firstParagraph.includes('<strong>') && !data.news_source.includes("AllSides"))){
+                        if (firstParagraph == "" && confidence == ""){
                             console.log("Failed to get all data on first attempt. Retrying...");
                             setTimeout(function (){
                                 generate(data, rating);
