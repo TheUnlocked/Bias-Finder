@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html id="popup-page">
+    <head>
+        <base href="./../">
+        <!-- <script src="./telemetry.js"></script> -->
+        <script src="./libs/jquery-3.1.1.min.js"></script>
+        <script src="./popup/popup.js"></script>
+
+        <!-- MATERIAL DESIGN LITE -->
+        <link rel="stylesheet" href="./styling/material.indigo-pink.min.css">
+        <script defer src="./styling/material.min.js"></script>
+
+
+        <link rel="stylesheet" href="./styling/biasfinder.css"></script>
+    </head>
+
+    <body>
+        <div id="title" class="title normal_text no_padding">Bias Finder</div>
+        <div id="icon" class="no_padding"></div>
+        <div class="no_padding normal_text"><strong>Confidence Level: </strong><div id="confidence" class="inline">Not Avaliable</div></div>
+        <div id="desc" class="normal_text padded"></div>
+        <span id="disclaimer" class="hidden">
+            <hr class="hr">
+            <div class="normal_text padded">
+                <b>Disclaimer:</b> This site's bias information is not directly collected from <a class="allsides_link" href="">AllSides.com</a>.
+            This shouldn't be an issue, but if Bias Finder shows a different rating for this site than AllSides.com does, please contact me immediately.
+            </div>
+        </span>
+        <hr class="hr" />
+        <div id="site_desc" class="normal_text padded"></div>
+        <hr class="hr" />
+
+        <footer>
+            <div class="center-items">
+                <a id="twitter-icon" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect" href="http://twitter.com/The_Unlocked/">
+                    <object class="media-icon" data="./decoration/twitter.svg" type="image/svg+xml"></object>
+                </a>
+                <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="twitter-icon">
+                        <b>Created by Unlocked</b>
+                </div>
+                <a id="allsides-icon" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect" href="http://allsides.com/">
+                    <object class="media-icon" data="./decoration/allsides.svg" type="image/svg+xml"></object>
+                </a>
+                <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="allsides-icon">
+                        <b>Powered by AllSides</b>
+                </div>
+                <a id="review-icon" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect" href="https://chrome.google.com/webstore/detail/bias-finder/jojjlkfeofgcjeanbpghcapjcccbakop/reviews">
+                    <object class="media-icon" data="./decoration/review.svg" type="image/svg+xml"></object>
+                </a>
+                <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="review-icon">
+                        <b>Please Write a Review!</b>
+                </div>
+                <a id="settings-icon" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect" href="">
+                    <object class="media-icon" data="./decoration/settings.svg" type="image/svg+xml"></object>
+                </a>
+                <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="settings-icon">
+                        <b>Settings and Info</b>
+                </div>
+                <a id="source-icon" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-js-ripple-effect" href="https://github.com/TheUnlocked/Bias-Finder">
+                    <object class="media-icon" data="./decoration/source.svg" type="image/svg+xml"></object>
+                </a>
+                <div class="mdl-tooltip mdl-tooltip--top" data-mdl-for="source-icon">
+                        <b>View the Source Code on GitHub</b>
+                </div>
+            </div>
+        </footer>
+    </body>
+</html>

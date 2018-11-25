@@ -1,0 +1,36 @@
+.center-items {
+    justify-content: center;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.mdl-button {
+    margin: 0 0.25em 0.5em 0.25em;
+}
+
+.mdl-button:not(.mdl-button--raised):not(.mdl-button--fab) {
+    border: 1px solid rgb(218, 220, 224);
+    border-radius: 4px;
+}
+
+html#options-page > body {
+    width: 350pt;
+}
+
+html#popup-page > body {
+    width: 300pt;
+}
+
+.title {
+    font-weight: 800;
+    font-size: 24pt;
+}
+
+.hidden {
+    display: none;
+}
+
+.media-icon {
+    height: 28px;
+    margin-top: 6px;
+}

@@ -1,3 +1,5 @@
+import NewsSource from "./types/NewsSource.js";
+
 let currentData = {};
 let firstParagraph = "";
 let confidence = "";
@@ -35,12 +37,31 @@ const hardcodeList = {
 	"CNN": "cnn.com/", //No https:// in order to add support for CNN's numerous subdomains.
 };
 
+
 $(() => {
 	postVersionInfo();
-	let data = [];
-	$.getJSON('https://gist.githubusercontent.com/TheUnlocked/42be5e01eaad902415bf4c23224a8679/raw/biasfinder_data.json', d => data = data.concat(d))
-	.always(() => $.getJSON('http://www.allsides.com/download/allsides_data.json', d => data = data.concat(d)))
-	.always(() => {
+
+	let siteList = [];
+	function addSite(siteData){
+		siteList.push(new NewsSource(
+			siteData.news_source,
+			siteData.allsides_url.replace('\\', ''),
+			NewsSource.parseRawURL(siteData.url),
+			siteData.bias_rating
+		));
+	}
+	function addSites(sitesData){
+		sitesData.forEach(siteData => {
+			addSite(siteData);
+		});
+	}
+
+	$.getJSON('https://gist.githubusercontent.com/TheUnlocked/42be5e01eaad902415bf4c23224a8679/raw/biasfinder_data.json')
+	.then(addSites)
+	.then(() => $.getJSON('http://www.allsides.com/download/allsides_data.json'))
+	.then(addSites)
+	.then(() => {
+		console.log(siteList);
 		function switchIcon(tab, tabId){
 			data = data.filter(obj => obj.news_source != "Test Source");
 
@@ -59,7 +80,6 @@ $(() => {
 
 				chrome.browserAction.setIcon({"path": {"24": images[currentData.bias_rating].img}, "tabId": tabId});
 				chrome.browserAction.setTitle({"title": images[currentData.bias_rating].name + " - " + currentData.news_source, "tabId": tabId});
-				chrome.browserAction.setPopup({"popup": "Popup/info_popup.html", "tabId": tabId});
 				$.get(currentData.allsides_url.replace("\\", ""), function(data){
 					dataText = String(data);
 					firstParagraph = dataText.split('<div id="content"', 2)[1].split('<p>', 2)[1].split('</p>', 1)[0];

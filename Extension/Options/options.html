@@ -1,25 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html id="options-page">
     <head>
-        <base href="../">
-        <script src="jquery-3.1.1.min.js"></script>
-        <script src="Options/options.js"></script>
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,800" rel="stylesheet" />
-        <link rel="stylesheet" href="style.css" />
+        <base href="./../">
+
+        <script src="./libs/jquery-3.1.1.min.js"></script>
+        <script src="./libs/browser-polyfill.min.js"></script>
+
+        <script src="./options/options.js"></script>
+        
+        <!-- MATERIAL DESIGN LITE -->
+        <link rel="stylesheet" href="./styling/material.indigo-pink.min.css">
+        <script defer src="./styling/material.min.js"></script>
+
+
+        <link rel="stylesheet" href="./styling/biasfinder.css"></script>
+
+        <style>
+            body > *:not(hr) {
+                margin: 0px 24px !important;
+            }
+            #save, #close {
+                margin-top: 1em;
+                margin-bottom: 0;
+            }
+        </style>
+
     </head>
 
-    <body>
-        <input id="enableTelemetry" type="checkbox" checked> Enable Google Analytics tracking of usage. <a href="https://github.com/TheUnlocked/Bias-Finder/blob/master/PrivacyPolicy.md"><sup>Privacy Policy</sup></a>
-        <br /><br />
-        <span style="display: flex; justify-content: center;"><input id="save" type="button" value="Save and Reload"></span>
+    <body style="overflow: hidden">
+        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" id="telemetry" for="telemetry-checkbox">
+            <input type="checkbox" id="telemetry-checkbox" class="mdl-checkbox__input" disabled>
+            <!-- <span class="mdl-checkbox__label">Enable Google Analytics tracking (<a href="https://github.com/TheUnlocked/Bias-Finder/blob/master/PrivacyPolicy.md">Privacy Policy</a>)</span> -->
+            <span class="mdl-checkbox__label">Google Analytics tracking is currently disabled. </span>
+        </label>
+        <span style="display: flex; justify-content: center;">
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" id="save">Save Settings</button>
+            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--primary" id="close">Close Settings</button>
+        </span>
+
+        <hr />
+
+        <footer>
+            <div class="center-items">
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--primary" href="http://twitter.com/The_Unlocked/">Unlocked's Twitter</a>
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--primary" href="http://allsides.com/">Powered by AllSides</a>
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--primary" href="https://chrome.google.com/webstore/detail/bias-finder/jojjlkfeofgcjeanbpghcapjcccbakop/reviews">Write a Review</a>
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--primary" href="https://github.com/TheUnlocked/Bias-Finder">Source Code</a>
+            </div>
+        </footer>
     </body>
-    <footer>
-        <br />
-        <div id="footer_container">
-            <a class="unlocked_link" href="http://twitter.com/The_Unlocked/"><img src="Decoration/footer_unlocked.png" alt="Written by Unlocked" /></a>
-            <a class="allsides_link" href="http://allsides.com/"><img src="Decoration/footer_allsides.png" alt="Powered by Allsides" /></a>
-            <a class="review_link" href="https://chrome.google.com/webstore/detail/bias-finder/jojjlkfeofgcjeanbpghcapjcccbakop/reviews"><img src="Decoration/footer_review.png" alt="Write a Review" /></a>
-            <a class="source_link" href="https://github.com/TheUnlocked/Bias-Finder"><img src="Decoration/footer_source.png" alt="View Source Code on GitHub" /></a>
-        </div>
-    </footer>
 </html>

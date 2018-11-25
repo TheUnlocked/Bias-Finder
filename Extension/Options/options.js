@@ -1,15 +1,16 @@
-$(function(){
-    chrome.storage.sync.get("enableTelemetry", function(items){
-        if ("enableTelemetry" in items){
-            document.getElementById("enableTelemetry").checked = items["enableTelemetry"];
+$(() => {
+    browser.storage.sync.get("enableTelemetry").then(({enableTelemetry}) => {
+        if (enableTelemetry !== undefined){
+            document.getElementById("telemetry").MaterialCheckbox[enableTelemetry ? 'check' : 'uncheck']();
         }
         else{
-            document.getElementById("enableTelemetry").checked = true;
-            chrome.storage.sync.set({"enableTelemetry": true});
+            document.getElementById("telemetry").MaterialCheckbox.check();
+            browser.storage.sync.set({enableTelemetry: true});
         }
     });
-    document.getElementById("save").addEventListener("click",function(){
-        chrome.storage.sync.set({"enableTelemetry": document.getElementById("enableTelemetry").checked == true});
-        chrome.runtime.reload();
+    document.getElementById('save').addEventListener('click', () => {
+        browser.storage.sync.set({
+            enableTelemetry: document.getElementById('telemetry-checkbox').checked
+        });
     });
 });
