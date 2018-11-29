@@ -27,7 +27,7 @@
     "<all_urls>"
   ],
   "background": {
-      "scripts": ["libs/jquery-3.1.1.min.js", "telemetry.js", "background.js"]
+      "page": "background.html"
   },
   "content_security_policy": "script-src 'self' https://www.google-analytics.com/; object-src 'self';"
 }

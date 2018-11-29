@@ -1,29 +1,11 @@
 import NewsSource from "./types/NewsSource.js";
 
-let currentData = {};
+let currentSite = {};
 let firstParagraph = "";
 let confidence = "";
 
 let currentTab;
 
-const images = {
-	"71": {"img": "Icons/icon-left.png", "name":"Left"},
-	"72": {"img": "Icons/icon-leaning-left.png", "name":"Lean Left"},
-	"73": {"img": "Icons/icon-center.png", "name":"Center"},
-	"74": {"img": "Icons/icon-leaning-right.png", "name":"Lean Right"},
-	"75": {"img": "Icons/icon-right.png", "name":"Right"},
-	"2707": {"img": "Icons/icon-mixed.png", "name":"Mixed"},
-	"2690": {"img": "Icons/icon-not-yet-rated.png", "name":"Not Rated"},
-};
-const nameDict = {
-	"Left": "71",
-	"Lean Left": "72",
-	"Center": "73",
-	"Lean Right": "74",
-	"Right": "75",
-	"Mixed": "2707",
-	"Not Rated": "2690"
-};
 const hardcodeList = {
 	"Washington Post": "https://washingtonpost.com/",
 	"Yahoo News": "https://yahoo.com/",
@@ -41,12 +23,15 @@ const hardcodeList = {
 $(() => {
 	postVersionInfo();
 
+	/**
+	 * @type {NewsSource[]} siteList
+	 */
 	let siteList = [];
 	function addSite(siteData){
 		siteList.push(new NewsSource(
 			siteData.news_source,
 			siteData.allsides_url.replace('\\', ''),
-			NewsSource.parseRawURL(siteData.url),
+			siteData.url,
 			siteData.bias_rating
 		));
 	}
@@ -61,41 +46,35 @@ $(() => {
 	.then(() => $.getJSON('http://www.allsides.com/download/allsides_data.json'))
 	.then(addSites)
 	.then(() => {
-		console.log(siteList);
-		function switchIcon(tab, tabId){
-			data = data.filter(obj => obj.news_source != "Test Source");
+		let switchIcon = (tab, tabId) => {
+			siteList = siteList.filter(obj => obj.sourceName != "Test Source");
 
 			currentTab = tab;
 
-			let simplifiedURL = tab.url.toLowerCase().replace("http://", "https://").replace("www.", "");
-
-			let biasList = data.filter(function(obj){
-				if (obj.news_source in hardcodeList){
-					return simplifiedURL.includes(hardcodeList[obj.news_source]);
-				}
-				return simplifiedURL.includes(obj.url.toLowerCase().replace("\\", "").replace("http://", "https://").replace("www.", ""));
+			let biasList = siteList.filter(function(site){
+				return site.test(tab.url);
 			});
 			if (biasList.length > 0){
-				currentData = biasList.filter((obj) => obj.forced)[0] || biasList[biasList.length - 1];
+				currentSite = biasList.filter((obj) => obj.forced)[0] || biasList[biasList.length - 1];
 
-				chrome.browserAction.setIcon({"path": {"24": images[currentData.bias_rating].img}, "tabId": tabId});
-				chrome.browserAction.setTitle({"title": images[currentData.bias_rating].name + " - " + currentData.news_source, "tabId": tabId});
-				$.get(currentData.allsides_url.replace("\\", ""), function(data){
-					dataText = String(data);
+				chrome.browserAction.setIcon({"path": {"24": currentSite.biasImage}, "tabId": tabId});
+				chrome.browserAction.setTitle({"title": currentSite.sourceName + " - " + NewsSource.BIASNAMES[currentSite.biasRating], "tabId": tabId});
+				$.get(currentSite.allsidesUrl, function(data){
+					let dataText = String(data);
 					firstParagraph = dataText.split('<div id="content"', 2)[1].split('<p>', 2)[1].split('</p>', 1)[0];
 					confidence = dataText.split('<h4>Confidence Level:</h4>', 2)[1].split('<strong class="margin-left-25">')[1].split('</', 1)[0];
 					let biasString = dataText.split('<span class="bias-value">', 2)[1].split('</', 1)[0];
-					if (biasString && biasString != images[currentData.bias_rating].name){
-						currentData.bias_rating = nameDict[biasString];
-						chrome.browserAction.setIcon({"path": {"24": images[currentData.bias_rating].img}, "tabId": tabId});
-						chrome.browserAction.setTitle({"title": images[currentData.bias_rating].name + " - " + currentData.news_source, "tabId": tabId});
+					if (biasString && biasString != NewsSource.BIASNAMES[currentSite.biasRating]){
+						currentSite.biasRating = NewsSource.BIASES[biasString.toUpperCase()];
+						chrome.browserAction.setIcon({"path": {"24": currentSite.biasImage}, "tabId": tabId});
+						chrome.browserAction.setTitle({"title": currentSite.sourceName + " - " + NewsSource.BIASNAMES[currentSite.biasRating], "tabId": tabId});
 					}
-					currentData.news_source = dataText.split('<div class="span4 source-image-wrapper News Media">', 2)[1].split('<h2>', 2)[1].split('</', 1)[0];
+					currentSite.sourceName = dataText.split('<div class="span4 source-image-wrapper News Media">', 2)[1].split('<h2>', 2)[1].split('</', 1)[0];
 
-					gotoSite(currentData.news_source, images[currentData.bias_rating].name);
+					gotoSite(currentSite.siteUrl, NewsSource.BIASNAMES[currentSite.biasRating]);
 				});
 			}
-		}
+		};
 		chrome.tabs.onActivated.addListener(function(info){
 			chrome.tabs.get(info.tabId, function(tab){
 				switchIcon(tab, info.tabId);
@@ -109,7 +88,7 @@ $(() => {
 
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse){
 	if (message.message == "getinfo"){
-		sendResponse(currentData);
+		sendResponse(currentSite);
 	}
 	else if (message.message == "getFirstParagraph"){
 		sendResponse(firstParagraph);

@@ -1,19 +1,76 @@
 
+const regexGenerator = /(https?:\/\/)?((?:[^/\n\r .]+?\.)*[^/\n\r .]+?\.)?([^/\n\r .]+?\.[^/\n\r .]+)(\/.*)?/;
+
 export default class NewsSource {
     /**
      * 
      * @param {string} sourceName The name of the news source
      * @param {string} allsidesUrl The URL of the AllSides page for the news source
-     * @param {RegExp} siteExp The site's URL regex matcher
+     * @param {string} siteUrl The site's URL regex matcher
      * @param {Number} biasRating The bias rating of the news source
      */
-    constructor(sourceName, allsidesUrl, siteExp, biasRating){
+    constructor(sourceName, allsidesUrl, siteUrl, biasRating, {
+        protocol,
+        domain,
+        subdomain,
+        path,
+        rejectMatches=false
+    } = {}){
         this.sourceName = sourceName;
-        this.allsidesUrl = allsidesUrl;
-        this.siteExp = siteExp;
+        this.allsidesUrl = allsidesUrl.replace(/\\\//, '/');
+        this.siteUrl = siteUrl.replace(/\\\//, '/');
         this.biasRating = NewsSource.BIASES[biasRating];
         this.firstParagraph = "";
         this.confidence = "";
+        this.rejectMatches = rejectMatches;
+
+        let urlStrings = siteUrl.match(regexGenerator);
+        if (!urlStrings || urlStrings[0] != siteUrl){
+            rejectMatches = true;
+        }
+        else{
+            [this.protocol, this.subdomain, this.domain, this.path] = [protocol, subdomain, domain, path];
+            if (this.protocol === false)
+                this.protocol = "";
+            if (this.subdomain === false)
+                this.subdomain = "";
+            if (this.path === false)
+                this.path = "";
+
+            if (this.protocol === true || !protocol){
+                if (!protocol) this.protocol = "(?:https?:\/\/)?";
+                else this.protocol = urlStrings[1];
+            }
+            if (typeof(this.domain) !== typeof(""))
+                this.domain = urlStrings[3];
+            if (this.subdomain === true || (this.subdomain != "" && !this.subdomain)){
+                subdomain = urlStrings[2];
+                if (subdomain == 'www')
+                    subdomain = "(?:www)?";
+
+                if (!subdomain) subdomain = "";
+                this.subdomain = subdomain;
+            }
+            if (this.path === true || (this.path != "" && !this.path)){
+                path = urlStrings[4];
+
+                if (path){
+                    let butlast = path.split('/');
+                    let last = butlast.pop();
+                    butlast = butlast.join('/');
+
+                    if (last.includes('.')){
+                        path = butlast + '/';
+                    }
+                    path = path.split('?', 1)[0];
+                    path = path.split('#', 1)[0];
+                }
+
+                if (!path || path == '/') path = "(?:\/.*)?";
+
+                this.path = path;
+            }
+        }
     }
 
     /**
@@ -47,16 +104,12 @@ export default class NewsSource {
      * 
      * @param {string} url The current URL to match
      */
-    match(url){
-        return this.siteExp.test(url);
+    test(url){
+        return !this.rejectMatches && this.regexUrl.test(url);
     }
 
-    /**
-     * 
-     * @param {string} url The URL provided by the AllSides database
-     */
-    static parseRawURL(url){
-        return new RegExp(``).compile();
+    get regexUrl(){
+        return new RegExp(this.protocol + this.subdomain + this.domain + this.path + ".*");
     }
 }
 
@@ -103,4 +156,15 @@ NewsSource.IMAGES = Object.freeze({
     [NewsSource.BIASES.RIGHT]: "Icons/icon-right.png",
     [NewsSource.BIASES.MIXED]: "Icons/icon-mixed.png",
     [NewsSource.BIASES.NOT_RATED]: "Icons/icon-not-yet-rated.png"
+});
+
+NewsSource.BIASNAMES = Object.freeze({
+    [-1]: "null",
+    0: "Left",
+    1: "Lean Left",
+    2: "Center",
+    3: "Lean Right",
+    4: "Right",
+    5: "Mixed",
+    6: "Not Rated"
 });

@@ -44,7 +44,7 @@ $(function(){
                             separated = shortened.split('<a');
                             for (let i = 0; i < separated.length; i++){
                                 if (i % 2 == 1){
-                                    separated[i] = separated[i].split('>', 1)
+                                    separated[i] = separated[i].split('>', 1);
                                 }
                             }
                         }
