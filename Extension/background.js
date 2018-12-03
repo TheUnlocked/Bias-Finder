@@ -55,7 +55,7 @@ $(() => {
 				return simplifiedURL.includes(obj.url.toLowerCase().replace("\\", "").replace("http://", "https://").replace("www.", ""));
 			});
 			if (biasList.length > 0){
-				currentData = biasList.filter((obj) => obj.forced)[0] || biasList[biasList.length - 1];
+				currentData = biasList.filter((obj) => obj.forced)[0] || biasList.sort((a,b) => a.bias_rating - b.bias_rating)[0];
 
 				chrome.browserAction.setIcon({"path": {"24": images[currentData.bias_rating].img}, "tabId": tabId});
 				chrome.browserAction.setTitle({"title": images[currentData.bias_rating].name + " - " + currentData.news_source, "tabId": tabId});
