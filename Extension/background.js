@@ -49,6 +49,9 @@ $(() => {
 			let simplifiedURL = tab.url.toLowerCase().replace("http://", "https://").replace("www.", "");
 
 			let biasList = data.filter(function(obj){
+				if (!obj.url || obj.url === ""){
+					return false;
+				}
 				if (obj.news_source in hardcodeList){
 					return simplifiedURL.includes(hardcodeList[obj.news_source]);
 				}
