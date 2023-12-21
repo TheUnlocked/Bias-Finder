@@ -21,7 +21,6 @@
 
   "permissions": [
     "tabs",
-    "storage",
     "activeTab"
   ],
 
