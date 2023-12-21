@@ -1,104 +1,171 @@
-let currentData = {};
-let firstParagraph = "";
-let confidence = "";
+// @ts-check
 
-let currentTab;
-
+/** @type {Record<import("./types").BiasRating, { img: string }>} */
 const images = {
-	"71": {"img": "Icons/icon-left.png", "name":"Left"},
-	"72": {"img": "Icons/icon-leaning-left.png", "name":"Lean Left"},
-	"73": {"img": "Icons/icon-center.png", "name":"Center"},
-	"74": {"img": "Icons/icon-leaning-right.png", "name":"Lean Right"},
-	"75": {"img": "Icons/icon-right.png", "name":"Right"},
-	"2707": {"img": "Icons/icon-mixed.png", "name":"Mixed"},
-	"2690": {"img": "Icons/icon-not-yet-rated.png", "name":"Not Rated"},
-};
-const nameDict = {
-	"Left": "71",
-	"Lean Left": "72",
-	"Center": "73",
-	"Lean Right": "74",
-	"Right": "75",
-	"Mixed": "2707",
-	"Not Rated": "2690"
-};
-const hardcodeList = {
-	"Washington Post": "https://washingtonpost.com/",
-	"Yahoo News": "https://yahoo.com/",
-	"Associated Press": "https://apnews.com/",
-	"Newsweek": "https://newsweek.com/",
-	"The Korea Herald": "https://koreaherald.com/",
-	"The Advocate-Messenger": "https://amnews.com/",
-	"CBN": "https://www1.cbn.com/",
-	"CBS ": "https://cbsnews.com/",
-	"Wall Street Journal- News": "https://wsj.com/",
-	"CNN": "cnn.com/", //No https:// in order to add support for CNN's numerous subdomains.
+	"Left": { "img": "Icons/icon-left.png" },
+	"Lean Left": { "img": "Icons/icon-leaning-left.png" },
+	"Center": { "img": "Icons/icon-center.png" },
+	"Lean Right": { "img": "Icons/icon-leaning-right.png" },
+	"Right": { "img": "Icons/icon-right.png" },
+	"Mixed": { "img": "Icons/icon-mixed.png" },
+	"Not Rated": { "img": "Icons/icon-not-yet-rated.png" },
 };
 
-$(() => {
-	postVersionInfo();
-	let data = [];
-	$.getJSON('https://gist.githubusercontent.com/TheUnlocked/42be5e01eaad902415bf4c23224a8679/raw/biasfinder_data.json', d => data = data.concat(d))
-	.always(() => $.getJSON('http://www.allsides.com/download/allsides_data.json', d => data = data.concat(d)))
-	.always(() => {
-		function switchIcon(tab, tabId){
-			data = data.filter(obj => obj.news_source != "Test Source");
+/**
+ * @returns {Promise<import("./types").AllSidesDataFeed>}
+ */
+async function getAllSidesData() {
+	try {
+		return await (await fetch('https://www.allsides.com/media-bias/json/noncommercial/publications')).json();
+	}
+	catch (e) {
+		console.error('Failed to fetch AllSides data!');
+		console.error(e);
+		return { allsides_media_bias_ratings: [] };
+	}
+}
 
-			currentTab = tab;
+/**
+ * @param {import("./types").NewsSource | undefined} source 
+ * @returns {Promise<import("./types").RequestContextResponse>}
+ */
+async function fetchContext(source) {
+	/** @type {import("./types").RequestContextResponse} */
+	let result = {
+		type: 'requestContext',
+	};
 
-			let simplifiedURL = tab.url.toLowerCase().replace("http://", "https://").replace("www.", "");
+	if (!source) {
+		return result;
+	}
 
-			let biasList = data.filter(function(obj){
-				if (!obj.url || obj.url === ""){
-					return false;
-				}
-				if (obj.news_source in hardcodeList){
-					return simplifiedURL.includes(hardcodeList[obj.news_source]);
-				}
-				return simplifiedURL.includes(obj.url.toLowerCase().replace("\\", "").replace("http://", "https://").replace("www.", ""));
-			});
-			if (biasList.length > 0){
-				currentData = biasList.filter((obj) => obj.forced)[0] || biasList.sort((a,b) => a.bias_rating - b.bias_rating)[0];
-
-				chrome.browserAction.setIcon({"path": {"24": images[currentData.bias_rating].img}, "tabId": tabId});
-				chrome.browserAction.setTitle({"title": images[currentData.bias_rating].name + " - " + currentData.news_source, "tabId": tabId});
-				chrome.browserAction.setPopup({"popup": "Popup/info_popup.html", "tabId": tabId});
-				$.get(currentData.allsides_url.replace("\\", ""), function(data){
-					dataText = String(data);
-					firstParagraph = dataText.split('<div id="content"', 2)[1].split('<p>', 2)[1].split('</p>', 1)[0];
-					confidence = dataText.split('<h4>Confidence Level:</h4>', 2)[1].split('<strong class="margin-left-25">')[1].split('</', 1)[0];
-					let biasString = dataText.split('<span class="bias-value">', 2)[1].split('</', 1)[0];
-					if (biasString && biasString != images[currentData.bias_rating].name){
-						currentData.bias_rating = nameDict[biasString];
-						chrome.browserAction.setIcon({"path": {"24": images[currentData.bias_rating].img}, "tabId": tabId});
-						chrome.browserAction.setTitle({"title": images[currentData.bias_rating].name + " - " + currentData.news_source, "tabId": tabId});
-					}
-					currentData.news_source = dataText.split('<div class="span4 source-image-wrapper News Media">', 2)[1].split('<h2>', 2)[1].split('</', 1)[0];
-
-					gotoSite(currentData.news_source, images[currentData.bias_rating].name);
-				});
-			}
+	const doc = await (async () => {
+		try {
+			const html = await (await fetch(source.publication.allsides_url)).text();
+			const doc = new DOMParser().parseFromString(html, 'text/html');
+			return doc;
 		}
-		chrome.tabs.onActivated.addListener(function(info){
-			chrome.tabs.get(info.tabId, function(tab){
-				switchIcon(tab, info.tabId);
-			});
+		catch (e) {
+			console.error('Failed to fetch AllSides page for ', source);
+			console.error(e);
+		}
+	})();
+
+	if (doc) {
+		// Fetching the paragraph is disabled for now
+		// result.firstParagraph = html.split('<div id="content"', 2)[1].split('<p>', 2)[1].split('</p>', 1)[0];
+	
+		const confidenceContainer = doc.querySelector('#source-page-top :has(.confidence-low, .confidence-medium, .confidence-high');
+		if (confidenceContainer) {
+			result.confidence = [
+				'Low',
+				'Medium',
+				'High'
+			][['confidence-low', 'confidence-medium', 'confidence-high'].findIndex(c => confidenceContainer.classList.contains(c))];
+		}
+	}
+
+	return result;
+}
+
+/**
+ * @param {import("./types").NewsSource[]} sources 
+ * @param {URL} url
+ * @returns {import("./types").NewsSource} 
+ */
+function findBestSource(sources, url) {
+	const simplifiedURL = url.toString().toLowerCase().replace("http://", "https://").replace("www.", "");
+
+	const biasList = sources.filter(source => {
+		if (!source.publication.source_url || source.publication.source_url === ""){
+			return false;
+		}
+
+		return simplifiedURL.includes(source.publication.source_url.toLowerCase().replace("\\", "").replace("http://", "https://").replace("www.", ""));
+	});
+
+	return biasList[0];
+}
+
+/**
+ * 
+ * @param {chrome.tabs.Tab | undefined} tab 
+ * @returns {Promise<import("./types").NewsSource | undefined>}
+ */
+async function getSource(tab) {
+	if (!tab?.url) {
+		return;
+	}
+
+	const allsidesData = await getAllSidesData();
+	return findBestSource(allsidesData.allsides_media_bias_ratings, new URL(tab.url));
+}
+
+/**
+ * @param {chrome.tabs.Tab} tab 
+ */
+async function switchIcon(tab){
+	const source = await getSource(tab);
+	const tabId = tab.id;
+
+	if (!tabId) {
+		return;
+	}
+
+	if (source) {
+		chrome.action.setIcon({
+			path: {
+				24: images[source.publication.media_bias_rating].img,
+			},
+			tabId,
 		});
-		chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab){
-			switchIcon(tab, tabId);
+		chrome.action.setTitle({
+			title: `${source.publication.media_bias_rating} - ${source.publication.source_name}`,
+			tabId,
 		});
+		chrome.action.setPopup({
+			popup: "Popup/info_popup.html",
+			tabId,
+		});
+	}
+}
+
+async function getCurrentTab() {
+	return (await chrome.tabs.query({
+		active: true,
+		currentWindow: true,
+	}))[0];
+}
+
+chrome.tabs.onActivated.addListener(info => {
+	chrome.tabs.get(info.tabId, tab => {
+		switchIcon(tab);
 	});
 });
 
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse){
-	if (message.message == "getinfo"){
-		sendResponse(currentData);
-	}
-	else if (message.message == "getFirstParagraph"){
-		sendResponse(firstParagraph);
-	}
-	else if (message.message == "getConfidence"){
-		sendResponse(confidence);
-	}
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+	switchIcon(tab);
+});
+
+chrome.runtime.onMessage.addListener((
+	/** @type {import("./types").Message} */ message,
+	sender,
+	/** @type {(response: import("./types").Response) => void} */ sendResponse,
+) => {
+	(/** @type {() => Promise<import("./types").Response>} */ async () => {
+		const tab = await getCurrentTab();
+	
+		switch (message.type) {
+			case 'requestSource':
+				return {
+					type: 'requestSource',
+					source: await getSource(tab),
+				};
+			case 'requestContext':
+				return await fetchContext(await getSource(tab));
+		}
+	})().then(response => sendResponse(response));
+
+	// Keeps sendResponse
 	return true;
 });

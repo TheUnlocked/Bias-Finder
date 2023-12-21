@@ -1,8 +1,8 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
 
   "name": "Bias Finder",
-  "version": "1.3.4",
+  "version": "1.4.0",
 
   "icons": {"128": "Icons/icon_about.png"},
 
@@ -12,16 +12,29 @@
   "author": "Unlocked",
   "homepage_url": "https://github.com/TheUnlocked/Bias-Finder",
 
-  "browser_action": {
-    "default_icon": "Icons/icon.png",
+  "action": {
+    "default_icon": {
+      "128": "Icons/icon.png"
+    },
     "default_popup": "Popup/unfound_popup.html"
   },
+
   "permissions": [
     "tabs",
-    "storage",
+    "storage"
+  ],
+  "host_permissions": [
     "<all_urls>"
   ],
+
+  "web_accessible_resources": [
+    {
+      "resources": ["*.png"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+
   "background": {
-      "scripts": ["jquery-3.5.1.min.js", "telemetry.js", "background.js"]
+      "service_worker": "background.js"
   }
 }

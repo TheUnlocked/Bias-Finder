@@ -1,14 +1,26 @@
-$(function(){
-    openPopup("nosite");
+// @ts-check
 
-    $("#confirm_search").click(function(){
-        searchSite(document.getElementById("allsides_search").value.toLowerCase());
-        chrome.tabs.create({url:"https://www.allsides.com/bias/bias-ratings?title=" + document.getElementById("allsides_search").value.split(' ').join('+')});
+window.addEventListener('load', () => {
+    /** @type {HTMLButtonElement} */
+    // @ts-ignore
+    const searchBtn = document.getElementById('confirm_search');
+    /** @type {HTMLInputElement} */
+    // @ts-ignore
+    const searchBox = document.getElementById('allsides_search');
+
+    function executeSearch() {
+        chrome.tabs.create({
+            url: `https://www.allsides.com/search?search=${encodeURIComponent(searchBox.value)}`,
+        });
+    }
+
+    searchBtn.addEventListener('click', () => {
+        executeSearch();
     });
 
-    $("#allsides_search").keyup(function(event){
-        if(event.keyCode == 13){
-            $("#confirm_search").click();
+    searchBox.addEventListener('keyup', e => {
+        if (e.key === 'Enter') {
+            executeSearch();
         }
     });
 });
