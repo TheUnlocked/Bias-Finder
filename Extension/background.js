@@ -11,12 +11,16 @@ const images = {
 	"Not Rated": { "img": "Icons/icon-not-yet-rated.png" },
 };
 
+/** @type {import("./types").AllSidesDataFeed} */
+let _allsidesDataCache;
+
 /**
  * @returns {Promise<import("./types").AllSidesDataFeed>}
  */
 async function getAllSidesData() {
 	try {
-		return await (await fetch('https://www.allsides.com/media-bias/json/noncommercial/publications')).json();
+		_allsidesDataCache ??= await (await fetch('https://www.allsides.com/media-bias/json/noncommercial/publications')).json();
+		return _allsidesDataCache;
 	}
 	catch (e) {
 		console.error('Failed to fetch AllSides data!');
@@ -24,6 +28,10 @@ async function getAllSidesData() {
 		return { allsides_media_bias_ratings: [] };
 	}
 }
+
+
+/** @type {Map<import("./types").NewsSource, import("./types").RequestContextResponse | null>} */
+const _contextMap = new Map();
 
 /**
  * @param {import("./types").NewsSource | undefined} source 
@@ -39,11 +47,22 @@ async function fetchContext(source) {
 		return result;
 	}
 
-	const doc = await (async () => {
+	const existingResult = _contextMap.get(source);
+	if (existingResult) {
+		return existingResult;
+	}
+
+	const html = await (async () => {
 		try {
 			const html = await (await fetch(source.publication.allsides_url)).text();
-			const doc = new DOMParser().parseFromString(html, 'text/html');
-			return doc;
+			return html;
+			// chrome.offscreen.createDocument({
+			// 	url: 
+			// 	reasons: [chrome.offscreen.Reason.DOM_PARSER],
+			// 	justification: 'To read data from AllSides'
+			// })
+			// const doc = new DOMParser().parseFromString(html, 'text/html');
+			// return doc;
 		}
 		catch (e) {
 			console.error('Failed to fetch AllSides page for ', source);
@@ -51,41 +70,100 @@ async function fetchContext(source) {
 		}
 	})();
 
-	if (doc) {
+	if (html) {
 		// Fetching the paragraph is disabled for now
 		// result.firstParagraph = html.split('<div id="content"', 2)[1].split('<p>', 2)[1].split('</p>', 1)[0];
 	
-		const confidenceContainer = doc.querySelector('#source-page-top :has(.confidence-low, .confidence-medium, .confidence-high');
-		if (confidenceContainer) {
-			result.confidence = [
-				'Low',
-				'Medium',
-				'High'
-			][['confidence-low', 'confidence-medium', 'confidence-high'].findIndex(c => confidenceContainer.classList.contains(c))];
+		// const confidenceContainer = html.querySelector('#source-page-top :has(.confidence-low, .confidence-medium, .confidence-high');
+		// if (confidenceContainer) {
+		// 	result.confidence = [
+		// 		'Low',
+		// 		'Medium',
+		// 		'High'
+		// 	][['confidence-low', 'confidence-medium', 'confidence-high'].findIndex(c => confidenceContainer.classList.contains(c))];
+		// }
+
+		const match = /** @type {RegExpMatchArray} */ (html.match(/<section id="source-page-top">[\s\S]*class="confidence-(low|medium|high)">/m));
+		if (match) {
+			result.confidence = {
+				'low': 'Low or Initial',
+				'medium': 'Medium',
+				'high': 'High'
+			}[match[1]];
 		}
 	}
 
+	_contextMap.set(source, result);
 	return result;
 }
 
 /**
  * @param {import("./types").NewsSource[]} sources 
  * @param {URL} url
- * @returns {import("./types").NewsSource} 
+ * @returns {import("./types").NewsSource | null} 
  */
 function findBestSource(sources, url) {
-	const simplifiedURL = url.toString().toLowerCase().replace("http://", "https://").replace("www.", "");
-
 	const biasList = sources.filter(source => {
 		if (!source.publication.source_url || source.publication.source_url === ""){
 			return false;
 		}
 
-		return simplifiedURL.includes(source.publication.source_url.toLowerCase().replace("\\", "").replace("http://", "https://").replace("www.", ""));
+		const sourceUrl = new URL(source.publication.source_url);
+
+		const basicHostname = sourceUrl.hostname.replace(/^www\./, '');
+
+		if (url.hostname.endsWith(basicHostname)) {
+			return true;
+		}
 	});
 
-	return biasList[0];
+	if (biasList.length === 0) {
+		return null;
+	}
+
+	/**
+	 * @param {string} haystack 
+	 * @param {string} needle 
+	 * @returns {number}
+	 */
+	function indexOfOrInfinity(haystack, needle) {
+		const idx = haystack.indexOf(needle);
+		if (idx === -1) {
+			return Infinity;
+		}
+		return idx;
+	}
+
+	return biasList.reduce((best, next) => {
+		const bestUrl = new URL(best.publication.source_url);
+		const nextUrl = new URL(next.publication.source_url);
+		
+		// for hostname, less is a more complete match is better
+		const hostnameIndexDiff = indexOfOrInfinity(url.hostname, bestUrl.hostname) - indexOfOrInfinity(url.hostname, nextUrl.hostname);
+		if (hostnameIndexDiff > 0) {
+			return next;
+		}
+		else if (hostnameIndexDiff < 0) {
+			return best;
+		}
+		else {
+			const pathIncludesBest = url.pathname.includes(bestUrl.pathname);
+			const pathIncludesNext = url.pathname.includes(nextUrl.pathname);
+			if (pathIncludesBest && !pathIncludesNext) {
+				return best;
+			}
+			else if (pathIncludesNext && !pathIncludesBest) {
+				return next;
+			}
+			else {
+				return bestUrl.pathname.length > nextUrl.pathname.length ? best : next;
+			}
+		}
+	});
 }
+
+/** @type {Record<string, import("./types").NewsSource | null>} */
+const _sourceMap = {};
 
 /**
  * 
@@ -98,7 +176,8 @@ async function getSource(tab) {
 	}
 
 	const allsidesData = await getAllSidesData();
-	return findBestSource(allsidesData.allsides_media_bias_ratings, new URL(tab.url));
+	_sourceMap[tab.url] ??= findBestSource(allsidesData.allsides_media_bias_ratings, new URL(tab.url));
+	return _sourceMap[tab.url] ?? undefined;
 }
 
 /**

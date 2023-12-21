@@ -21,10 +21,12 @@
 
   "permissions": [
     "tabs",
-    "storage"
+    "storage",
+    "activeTab"
   ],
+
   "host_permissions": [
-    "<all_urls>"
+    "*://www.allsides.com/*"
   ],
 
   "web_accessible_resources": [

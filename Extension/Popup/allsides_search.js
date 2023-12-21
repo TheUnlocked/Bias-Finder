@@ -10,7 +10,7 @@ window.addEventListener('load', () => {
 
     function executeSearch() {
         chrome.tabs.create({
-            url: `https://www.allsides.com/search?search=${encodeURIComponent(searchBox.value)}`,
+            url: `https://www.allsides.com/media-bias/ratings?title=${encodeURIComponent(searchBox.value)}`,
         });
     }
 
