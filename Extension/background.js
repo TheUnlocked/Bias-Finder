@@ -11,7 +11,7 @@ const images = {
 	"Not Rated": { "img": "Icons/icon-not-yet-rated.png" },
 };
 
-/** @type {import("./types").AllSidesDataFeed} */
+/** @type {Promise<import("./types").AllSidesDataFeed>} */
 let _allsidesDataCache;
 
 /**
@@ -19,8 +19,8 @@ let _allsidesDataCache;
  */
 async function getAllSidesData() {
 	try {
-		_allsidesDataCache ??= await (await fetch('https://www.allsides.com/media-bias/json/noncommercial/publications')).json();
-		return _allsidesDataCache;
+		_allsidesDataCache ??= fetch('https://www.allsides.com/media-bias/json/noncommercial/publications').then(x => x.json());
+		return await _allsidesDataCache;
 	}
 	catch (e) {
 		console.error('Failed to fetch AllSides data!');
@@ -30,7 +30,7 @@ async function getAllSidesData() {
 }
 
 
-/** @type {Map<import("./types").NewsSource, import("./types").RequestContextResponse | null>} */
+/** @type {Map<import("./types").NewsSource, Promise<import("./types").RequestContextResponse | null>>} */
 const _contextMap = new Map();
 
 /**
@@ -38,6 +38,28 @@ const _contextMap = new Map();
  * @returns {Promise<import("./types").RequestContextResponse>}
  */
 async function fetchContext(source) {
+	if (!source) {
+		return {
+			type: 'requestContext',
+		};
+	}
+
+	const existingResult = await _contextMap.get(source);
+	if (existingResult) {
+		return existingResult;
+	}
+
+	const result = _fetchContext(source);
+	_contextMap.set(source, result);
+
+	return await result;
+}
+
+/**
+ * @param {import("./types").NewsSource} source 
+ * @returns {Promise<import("./types").RequestContextResponse>}
+ */
+async function _fetchContext(source) {
 	/** @type {import("./types").RequestContextResponse} */
 	let result = {
 		type: 'requestContext',
@@ -45,11 +67,6 @@ async function fetchContext(source) {
 
 	if (!source) {
 		return result;
-	}
-
-	const existingResult = _contextMap.get(source);
-	if (existingResult) {
-		return existingResult;
 	}
 
 	const html = await (async () => {
@@ -93,7 +110,6 @@ async function fetchContext(source) {
 		}
 	}
 
-	_contextMap.set(source, result);
 	return result;
 }
 
