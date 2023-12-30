@@ -98,6 +98,14 @@ async function fetchContext(source) {
 }
 
 /**
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#escaping
+ * @param {string} string
+ */
+function escapeRegExp(string) {
+	return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
  * @param {import("./types").NewsSource[]} sources 
  * @param {URL} url
  * @returns {import("./types").NewsSource | null} 
@@ -111,8 +119,10 @@ function findBestSource(sources, url) {
 		const sourceUrl = new URL(source.publication.source_url);
 
 		const basicHostname = sourceUrl.hostname.replace(/^www\./, '');
-
-		if (url.hostname.endsWith(basicHostname)) {
+		const pathExp = new RegExp(`^${escapeRegExp(sourceUrl.pathname)}`, 'i');
+		
+		// Should match host and path (just matching host can have over-zealous results)
+		if (url.hostname.endsWith(basicHostname) && pathExp.test(url.pathname)) {
 			return true;
 		}
 	});
